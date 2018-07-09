@@ -1,0 +1,40 @@
+delimiter //
+
+DROP PROCEDURE IF EXISTS sp_update_product//
+CREATE PROCEDURE sp_update_product (
+   IN in_productid INTEGER (32) UNSIGNED,
+   IN in_name VARCHAR (256) CHARACTER SET utf8,
+   IN in_subheading VARCHAR (1024) CHARACTER SET utf8,
+   IN in_description VARCHAR (16384) CHARACTER SET utf8,
+   IN in_categoryid SMALLINT(16) UNSIGNED,
+   IN in_url VARCHAR(256) CHARACTER SET utf8,
+   IN in_brand VARCHAR(256) CHARACTER SET utf8,
+   IN in_tags VARCHAR(512) CHARACTER SET utf8,
+   IN in_is_taxable BOOLEAN,
+   IN in_taxname VARCHAR (256) CHARACTER SET utf8,
+   IN in_is_shipped BOOLEAN,
+   IN in_hide_when_out_of_stock BOOLEAN,
+   IN in_is_provisioning BOOLEAN,
+   IN in_use_stocklevel BOOLEAN
+)
+BEGIN
+UPDATE products SET 
+   datemodified=utc_timestamp(),
+   productname=in_name,
+   description=in_description,
+   categoryid=in_categoryid,
+   producturl=in_url,
+   brand=in_brand,
+   tags=in_tags,
+   is_taxable=in_is_taxable,
+   taxname=in_taxname,
+   is_shipped=in_is_shipped,
+   hide_when_out_of_stock=in_hide_when_out_of_stock,
+   is_provisioning = in_is_provisioning,
+   use_stocklevel = in_use_stocklevel,
+   subheading = in_subheading
+   WHERE productid=in_productid;
+COMMIT;
+END;
+//
+delimiter ;

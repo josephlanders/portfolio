@@ -1,0 +1,179 @@
+CREATE TABLE products (productid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                    display_order INTEGER (32) UNSIGNED,
+                    dateadded DATETIME,
+                    datemodified DATETIME,
+                    productname VARCHAR (256) CHARACTER SET utf8,
+                    subheading VARCHAR (1024) CHARACTER SET utf8,
+                    description VARCHAR (16384) CHARACTER SET utf8,
+                    categoryid SMALLINT (16) UNSIGNED,
+                    producturl VARCHAR(256) CHARACTER SET utf8,
+                    brand VARCHAR(256) CHARACTER SET utf8,
+                    tags VARCHAR(512) CHARACTER SET utf8,
+                    is_taxable BOOLEAN DEFAULT TRUE,
+                    taxname VARCHAR (256) CHARACTER SET utf8,
+                    is_shipped BOOLEAN DEFAULT TRUE,
+                    hide_when_out_of_stock BOOLEAN DEFAULT FALSE,
+                    is_provisioning BOOLEAN DEFAULT TRUE,
+                    use_stocklevel BOOLEAN DEFAULT FALSE,
+                    is_recurring BOOLEAN DEFAULT FALSE,
+                    recurring_type VARCHAR (32) CHARACTER SET utf8
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE variants (productid INTEGER (32) UNSIGNED NOT NULL,
+                    variantid INTEGER (32) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                    display_order INTEGER (32) UNSIGNED,
+                    datemodified DATETIME,
+                    variantname VARCHAR (256) CHARACTER SET utf8,
+                    stocklevel SMALLINT(16) SIGNED DEFAULT NULL,                    
+                    inventoryid SMALLINT (16) UNSIGNED DEFAULT NULL,
+                    download_location VARCHAR (1024) CHARACTER SET utf8,
+                    download_url VARCHAR (1024) CHARACTER SET utf8,
+                    download_original_filename VARCHAR (128) CHARACTER SET utf8,
+                    download_expiry_time INTEGER (16) UNSIGNED,
+                    weightinkg DECIMAL (6,2) UNSIGNED,
+                    widthincm DECIMAL (6,2) UNSIGNED,
+                    heightincm DECIMAL (6,2) UNSIGNED,
+                    depthincm DECIMAL (6,2) UNSIGNED,
+                    price DECIMAL (27,9) UNSIGNED,
+                    tax DECIMAL (27,9) UNSIGNED,
+                    is_provisioning BOOLEAN DEFAULT TRUE,
+                    recurring_price DECIMAL (27,9) UNSIGNED,
+                    recurring_tax DECIMAL (27,9) UNSIGNED,
+                    recurring_interval VARCHAR(10) CHARACTER SET utf8
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE images (productid INTEGER (32) UNSIGNED NOT NULL,
+                    variantid INTEGER (32) UNSIGNED,
+                    imageid TINYINT(4)  UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    image_url_dirbase VARCHAR(256) CHARACTER SET utf8,
+                    image_url_filebase VARCHAR(64) CHARACTER SET utf8,
+                    hash VARCHAR(20) CHARACTER SET utf8,
+                    image_url_extension VARCHAR(6) CHARACTER SET utf8,
+                    display_order INTEGER (8) UNSIGNED
+
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE specials (specialid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                       productid INTEGER (32) UNSIGNED NOT NULL,
+                       variantid INTEGER (32) UNSIGNED NOT NULL,
+                       datemodified DATETIME,
+                       enabled BOOLEAN default TRUE,
+                       start DATETIME,
+                       end DATETIME,
+                       ends BOOLEAN default TRUE,
+                       specialprice DECIMAL (27,9) UNSIGNED,
+                       percentage DECIMAL (4,2) UNSIGNED,
+                       value DECIMAL (27,9) UNSIGNED,
+                       typeid TINYINT (4) UNSIGNED
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE special_types (typeid TINYINT (4) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                          typename VARCHAR (16) CHARACTER SET utf8
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE product_comment_settings(
+   productid INTEGER (32) UNSIGNED PRIMARY KEY NOT NULL,
+   comments_enabled BOOLEAN DEFAULT TRUE
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE product_comments (productid INTEGER (32) UNSIGNED NOT NULL,
+                   commentid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                   parentid INTEGER (32) UNSIGNED,
+                   userid INTEGER (32) UNSIGNED,
+                   admin_userid INTEGER (32) UNSIGNED,
+                    title VARCHAR (256) CHARACTER SET utf8,
+                    comment VARCHAR (4096) CHARACTER SET utf8,
+                    dateadded DATETIME,
+                    dateupdated DATETIME,
+                   positives INTEGER (32) UNSIGNED DEFAULT 0,
+                   negatives INTEGER (32) UNSIGNED DEFAULT 0,
+                   visible BOOLEAN DEFAULT TRUE,
+                   deleted BOOLEAN DEFAULT FALSE,
+                   awaiting_approval BOOLEAN DEFAULT FALSE,
+                   approved BOOLEAN DEFAULT TRUE,
+                   reported BOOLEAN DEFAULT FALSE,
+                   reported_reason VARCHAR(128) CHARACTER SET utf8,
+                   moderated BOOLEAN DEFAULT FALSE,
+                   moderated_reason VARCHAR(128) CHARACTER SET utf8,
+                   moderated_by_userid INTEGER (32) UNSIGNED
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE product_reviews (productid INTEGER (32) UNSIGNED NOT NULL,
+                   reviewid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                   userid INTEGER (32) UNSIGNED,
+                    title VARCHAR (256) CHARACTER SET utf8,
+                    review VARCHAR (4096) CHARACTER SET utf8,
+                    dateadded DATETIME,
+                    dateupdated DATETIME,
+                   positives INTEGER (32) UNSIGNED DEFAULT 0,
+                   negatives INTEGER (32) UNSIGNED DEFAULT 0,
+                   score INTEGER (32) UNSIGNED DEFAULT 0,
+                   visible BOOLEAN DEFAULT TRUE,
+                   deleted BOOLEAN DEFAULT FALSE,
+                   awaiting_approval BOOLEAN DEFAULT FALSE,
+                   approved BOOLEAN DEFAULT TRUE,
+                   reported BOOLEAN DEFAULT FALSE,
+                   reported_reason VARCHAR(128) CHARACTER SET utf8,
+                   moderated BOOLEAN DEFAULT FALSE,
+                   moderated_reason VARCHAR(128) CHARACTER SET utf8,
+                   moderated_by_userid INTEGER (32) UNSIGNED
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE product_options (productid INTEGER (32) UNSIGNED NOT NULL,
+                    optionid TINYINT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY  NOT NULL,
+                    name VARCHAR(256) CHARACTER SET UTF8,
+                    default_value VARCHAR(256) CHARACTER SET UTF8                                       
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE variant_options (variantoptionid TINYINT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                    optionid TINYINT (5) UNSIGNED NOT NULL,
+                    productid INTEGER (32) UNSIGNED NOT NULL,
+                    variantid INTEGER (32) UNSIGNED,
+                    value VARCHAR(256) CHARACTER SET UTF8                    
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE product_metadata (productid INTEGER (32) UNSIGNED NOT NULL,
+                    metadataid TINYINT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY  NOT NULL,
+                    name VARCHAR(256) CHARACTER SET UTF8,
+                    default_value VARCHAR(256) CHARACTER SET UTF8                    
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE variant_metadata (variantmetadataid TINYINT (5) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                    metadataid TINYINT (5) UNSIGNED NOT NULL,
+                    productid INTEGER (32) UNSIGNED NOT NULL,
+                    variantid INTEGER (32) UNSIGNED,
+                    value VARCHAR(256) CHARACTER SET UTF8                    
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE product_taxes (
+                            producttaxid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                            productid INTEGER (32) UNSIGNED NOT NULL,
+                            taxid INTEGER(32) UNSIGNED,
+                            taxname VARCHAR (256) CHARACTER SET utf8,
+                            percentage DECIMAL (4,2) UNSIGNED,
+                            total_tax DECIMAL (27,9) UNSIGNED
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+CREATE TABLE variant_uploads (variantuploadid INTEGER(16) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                    productid INTEGER (32) UNSIGNED,
+                    variantid INTEGER (32) UNSIGNED NOT NULL,
+                    download_location VARCHAR (1024) CHARACTER SET utf8,
+                    download_url VARCHAR (1024) CHARACTER SET utf8,
+                    download_original_filename VARCHAR (128) CHARACTER SET utf8,
+                    download_expiry_time INTEGER (16) UNSIGNED
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;
+
+
+CREATE TABLE variant_download_links (downloadlinkid INTEGER(16) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                    download_verification_hash VARCHAR(64) CHARACTER SET utf8,
+                    dateadded DATETIME,
+                    download_expiry_time INTEGER (16) UNSIGNED,
+                    download_location VARCHAR (1024) CHARACTER SET utf8,
+                    download_url VARCHAR (1024) CHARACTER SET utf8,
+                    download_original_filename VARCHAR (128) CHARACTER SET utf8
+)  ENGINE=InnoDB  ROW_FORMAT=COMPRESSED CHARACTER SET utf8;

@@ -1,0 +1,73 @@
+delimiter //
+
+DROP PROCEDURE IF EXISTS sp_create_product//
+CREATE PROCEDURE sp_create_product (
+   IN in_productname VARCHAR (256) CHARACTER SET utf8,
+   IN in_subheading VARCHAR (1024) CHARACTER SET utf8,
+   IN in_description VARCHAR (16384) CHARACTER SET utf8,
+   IN in_categoryid SMALLINT (16) UNSIGNED,
+   IN in_producturl VARCHAR(256) CHARACTER SET utf8, 
+   IN in_brand VARCHAR(256) CHARACTER SET utf8,
+   IN in_tags VARCHAR(512) CHARACTER SET utf8,
+   IN in_is_taxable BOOLEAN,
+   IN in_taxname VARCHAR (256) CHARACTER SET utf8,
+   IN in_is_shipped BOOLEAN,
+   IN in_hide_when_out_of_stock BOOLEAN,
+   IN in_is_provisioning BOOLEAN,
+   IN in_use_stocklevel BOOLEAN
+
+)
+BEGIN
+DECLARE out_productid INT(32) UNSIGNED;
+DECLARE descriptiveurlwithid VARCHAR(256) CHARACTER SET utf8;
+INSERT INTO products (
+   dateadded,
+   datemodified,
+   productname,
+   description,
+   categoryid,
+   producturl,
+   brand,
+   tags,
+   is_taxable,
+   taxname,
+   is_shipped,
+   hide_when_out_of_stock,
+   is_provisioning,
+   use_stocklevel,
+   subheading
+   )
+   VALUES (
+   utc_timestamp(),
+   utc_timestamp(),
+   in_productname,
+   in_description,
+   in_categoryid,
+   in_producturl,
+   in_brand,
+   in_tags,
+   in_is_taxable,
+   in_taxname,
+   in_is_shipped,
+   in_hide_when_out_of_stock,
+   in_is_provisioning,
+   in_use_stocklevel,
+   in_subheading
+   );
+
+#SELECT last_insert_id() INTO out_itemid;
+
+#SET descriptiveurlwithid = CONCAT(in_itemurl, "-");
+#SET descriptiveurlwithid = CONCAT(descriptiveurlwithid, out_itemid);
+
+#UPDATE items SET 
+#   itemurl=descriptiveurlwithid
+#   WHERE itemid=out_itemid;
+
+#SELECT out_itemid;
+
+COMMIT;
+SELECT last_insert_id() AS out_productid;
+END;
+//
+delimiter ;

@@ -1,0 +1,12 @@
+# TODO: Now() should be stored in a variable
+delimiter //
+
+DROP PROCEDURE IF EXISTS sp_get_all_products//
+CREATE PROCEDURE sp_get_all_products (
+)
+BEGIN
+select * from products;
+
+END;
+//
+delimiter ;
