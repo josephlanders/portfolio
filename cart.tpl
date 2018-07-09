@@ -384,49 +384,25 @@ or
    
    
    function cartfunc(json, jsonstate){
-   //alert(json);
-   //alert(json.count);
-   //alert(jsonstate);
-   //alert("returned");
-                //$countries = json.countries;
                 $states = json["all_states"];
-                //alert(json.states["Australia"]);
-                //alert(json.states["United Kingdom"]);
-                //alert($countries);
-                //alert($states);
-               //$('#cartbar_count').html($string);
                $('#shiptocountry').ready(setcountries);
                  
           }
    
    function setcountries (event, $type){
                                                         
-      //$text = "<select name='shiptocountry' id='shiptocountry'>";                                                        
-      //$text += $countries;
-      //$text += "</select>";
-      //$('#shiptocountry').replaceWith($text);
-                                                        
-      //$('#shiptocountry').ready(setstates);
       $('#shiptocountry').change(setstates);
 
    }
                     
    function setstates (event, $type){
-      //$state_original_value = default_state;
-                              //alert("hi");   
-                              //alert("go");
       $country =  $('#shiptocountry').val();
                                                                                 
-      //$list = "<option value=''>Choose</option>";
 $text = "";
-//alert($country);
-//
       $has_states = false;
       if ($country in $states)
       {
-         //alert("has states");   
-      $text = "<select name='shiptostate' id='shiptostate' class='product_input' style='float:left;width:200px'>";                                                        
-      //alert($states[$country]);
+      $text = "<select name='shiptostate' id='shiptostate' class='product_input' style='float:left;width:200px'>";                                                              
       $text += $states[$country];
       $text += "</select>";
           $has_states = true;
@@ -444,7 +420,6 @@ $text = "";
                $('#shiptostate').show();
 
       $('#shiptostate').show();
-              //alert("has states");
       }
                             
    };
@@ -474,16 +449,12 @@ $text = "";
    
    function cartestimateupdatefunc(json, jsonstate)
    {
-       //return;
-               //$("A").val
-       //alert(json.cart.count);.text(json.cart.count);
        $("#cart_product_total").html("<span class='money'>" + json.product_total_formatted + "</span>");
        $("#cart_subtotal").html("<span class='money'>" + json.subtotal_formatted + "</span>");
        if (json.shipping !== null)
        {
            $("#cart_shipping").html("<span class='money'>" + json.shipping_formatted + "</span>");
-       } else {
-           //$("#cart_shipping").html("<span class='money'>No shipping available to this destination for this parcel weight.</span>");
+       } else {    
            $("#cart_shipping").html("<span class='money'>Calculated at checkout</span>");
        }
        $("#cart_total").html("<span class='money'>" + json.total_formatted + "</span>");
@@ -493,7 +464,6 @@ $text = "";
     if ( $coupon_applied_value_element.length > 0){
         
           $("#cart_coupon_applied_value").html("<span class='money'>" + json.coupon_applied_value_formatted + "</span>");
-          //$("#cart_coupon_applied_value").css("display", "block");
           if (json.coupon_applied_value > 0)
           {
              $("#cart_coupon_row").show();
@@ -539,16 +509,12 @@ $text = "";
    
    function cartusecouponupdatefunc(json, jsonstate)
    {
-       //return;
-               //$("A").val
-       //alert(json.cart.count);.text(json.cart.count);
        $("#cart_product_total").html("<span class='money'>" + json.product_total_formatted + "</span>");
        $("#cart_subtotal").html("<span class='money'>" + json.subtotal_formatted + "</span>");
        if (json.shipping !== null)
        {
            $("#cart_shipping").html("<span class='money'>" + json.shipping_formatted + "</span>");
        } else {
-           //$("#cart_shipping").html("<span class='money'>No shipping available to this destination for this parcel weight.</span>");
            $("#cart_shipping").html("<span class='money'>Calculated at checkout</span>");
        }
        $("#cart_total").html("<span class='money'>" + json.total_formatted + "</span>");
@@ -558,7 +524,6 @@ $text = "";
     if ( $coupon_applied_value_element.length > 0){
         
           $("#cart_coupon_applied_value").html("<span class='money'>" + json.coupon_applied_value_formatted + "</span>");
-          //$("#cart_coupon_applied_value").css("display", "block");
           if (json.coupon_applied_value > 0)
           {
              $("#cart_coupon_row").show();
@@ -610,23 +575,10 @@ $text = "";
    {                        
      event.preventDefault();
      
-       //alert("Got pressed");
-       
-       // an object
-       //alert(event);
-              
-       //alert(event.target);
-       //"cart_remove_link_id";
-       //alert(event.target.id);
-       //alert($("#cart_remove_link_id").attr("data-productid"));
-       //alert(event.target); 
       $productid = $(event.target).attr("data-productid");
        $variantid = $(event.target).attr("data-variantid");
        $parcelid = $(event.target).attr("data-parcelid");
-       //$productid = $(event.srcElement).attr("productid");
-       
-       //alert($productid);
-       
+
     $.ajax({
         type: "POST",
         dataType: "json",
@@ -656,26 +608,9 @@ $text = "";
        
        $data = $(".cart_row_class");
        
-       /*
-       alert("go");
-       alert($data.length);
-       
-       for (var i =0, limit = $data.length - 1; i < limit; i++)
-       {
-                   //alert(i);
-                           if($data[i].length)
-                           
-           {
-               alert("got something");
-              alert($($data[i]).attr("data-productid"));             
-            } else {
-                alert("nothing");
-            }
-       } */
        
        // Output go, 2  , 4, 3
        
-       //alert($productid);
            if ($updated == true)
            {
        $.each($data, function (index, element)
@@ -704,14 +639,12 @@ $text = "";
 
        //return;
                //$("A").val
-       //alert(json.cart.count);.text(json.cart.count);
        $("#cart_product_total").html("<span class='money'>" + json.product_total_formatted + "</span>");
        $("#cart_subtotal").html("<span class='money'>" + json.subtotal_formatted + "</span>");
        if (json.shipping !== null)
        {
            $("#cart_shipping").html("<span class='money'>" + json.shipping_formatted + "</span>");
        } else {
-           //$("#cart_shipping").html("<span class='money'>No shipping available to this destination for this parcel weight.</span>");
            $("#cart_shipping").html("<span class='money'>Calculated at checkout</span>");
        }
        $("#cart_total").html("<span class='money'>" + json.total_formatted + "</span>");
@@ -721,7 +654,6 @@ $text = "";
     if ( $coupon_applied_value_element.length > 0){
         
           $("#cart_coupon_applied_value").html("<span class='money'>" + json.coupon_applied_value_formatted + "</span>");
-          //$("#cart_coupon_applied_value").css("display", "block");
           if (json.coupon_applied_value > 0)
           {
              $("#cart_coupon_row").show();
@@ -759,15 +691,11 @@ $text = "";
        format: "json"
         };
        
-        $arr = $("#cart_contents_form").serializeArray();
-        
-        //alert($serialised_data);
+        $arr = $("#cart_contents_form").serializeArray();        
        
    $data_serialized = $.param ($data, true);
    
    $data_serialized2 = $.param ($arr, true);
-   
-   //alert($data_serialized2);
    
    $data_serialized = $data_serialized + "&" + $data_serialized2;
        
@@ -854,7 +782,6 @@ $text = "";
        {
            $("#cart_shipping").html("<span class='money'>" + json.shipping_formatted + "</span>");
        } else {
-           //$("#cart_shipping").html("<span class='money'>No shipping available to this destination for this parcel weight.</span>");
            $("#cart_shipping").html("<span class='money'>Calculated at checkout</span>");
        }
        $("#cart_total").html("<span class='money'>" + json.total_formatted + "</span>");
@@ -864,7 +791,6 @@ $text = "";
     if ( $coupon_applied_value_element.length > 0){
         
           $("#cart_coupon_applied_value").html("<span class='money'>" + json.coupon_applied_value_formatted + "</span>");
-          //$("#cart_coupon_applied_value").css("display", "block");
           if (json.coupon_applied_value > 0)
           {
              $("#cart_coupon_row").show();
