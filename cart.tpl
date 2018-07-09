@@ -793,41 +793,17 @@ $text = "";
        
        $data = $(".cart_row_class");
        
-       $cart = json.cart;
-       
-       //alert("returned");
-       /*
-       alert("go");
-       alert($data.length);
-       
-       for (var i =0, limit = $data.length - 1; i < limit; i++)
-       {
-                   //alert(i);
-                           if($data[i].length)
-                           
-           {
-               alert("got something");
-              alert($($data[i]).attr("data-productid"));             
-            } else {
-                alert("nothing");
-            }
-       } */
+       $cart = json.cart;       
        
        // Output go, 2  , 4, 3
        
-       //alert($productid);
-       
-           //if ($updated == true)
-           //{
        $.each($data, function (index, element)
        {           
            
            $elementParcelID = $(element).attr("data-parcelid");
            $elementProductID = $(element).attr("data-productid");
            $elementVariantID = $(element).attr("data-variantid");
-           
-//alert($elementParcelID + " " + $elementProductID + " " + $elementVariantID);
-           
+                      
            $.each ($cart["parcels"], function (index, $parcel)
            {               
                $parcelid = $parcel["parcelid"];
@@ -839,59 +815,39 @@ $text = "";
               $.each ($variants, function (index, $variant)
               {
                   $variantid = $variant["variantid"];
-                  //alert($variantid);
+		  
            if (($parcelid == $elementParcelID) && ($productid == $elementProductID) && ($variantid == $elementVariantID))
            {
                $orderedqty = $variant["orderedqty"];
                $("#qty_" + $productid + "_" + $variantid).val($orderedqty);
                
                $cart_purchaseprice_obj = $(element).find("#qty_" + $productid + "_" + $variantid);
-               //$cart_purchaseprice_obj.html("<span class='money'>8</span>");
-               //alert ($orderedqty);
                $cart_purchaseprice_obj.val($orderedqty);
-               //$cart_purchaseprice_obj.attr("value", $orderedqty);
-               
-               //$cart_quantity_obj = $($data).find("#cart_quantity");
-               //$cart_quantity_obj
                $cart_purchaseprice_obj = $(element).children("#cart_unitcost");
-               //$cart_purchaseprice_obj.html("<span class='money'>8</span>");
+
                $cart_purchaseprice_obj.html("<span class='money'>" + $variant["purchaseprice_formatted"] + "</span>");
                
                $cart_purchaseprice_obj = $(element).children("#cart_unittaxcost");
-               //$cart_purchaseprice_obj.html("<span class='money'>8</span>");
+
                $cart_purchaseprice_obj.html("<span class='money'>" + $variant["purchaseprice_unit_tax_formatted"] + "</span>");
                
                $cart_purchaseprice_obj = $(element).children("#cart_quantitycost");
-               //$cart_purchaseprice_obj.html("<span class='money'>8</span>");
+
                $cart_purchaseprice_obj.html("<span class='money'>" + $variant["subtotal_formatted"] + "</span>");
-               //$cart_quantity_obj
-               //alert($parcelid + " "  + $productid + " " + $variantid + " " + $elementParcelID + " " + $elementProductID + " " + $elementVariantID);
-               
-               //$(element).remove();
+
+
            }
-           //alert($parcelid + " "  + $productid + " " + $variantid + " " + $elementParcelID + " " + $elementProductID + " " + $elementVariantID);
+
               });
               });
            });
-           /*
-           //0 htmlelement object
-           $elementParcelID = $(element).attr("data-parcelid");
-           $elementProductID = $(element).attr("data-productid");
-           $elementVariantID = $(element).attr("data-variantid");
-           
 
-           if (($parcelid == $elementParcelID) && ($productid == $elementProductID) && ($variantid == $elementVariantID))
-           {
-               //alert($parcelid + " "  + $productid + " " + $variantid + " " + $elementParcelID + " " + $elementProductID + " " + $elementVariantID);
-               //$(element).remove();
-           } */
        });
        
        $('#cartbar_count').html(json.cart_count);
                   //} 
        //return;
-               //$("A").val
-       //alert(json.cart.count);.text(json.cart.count);
+       
        $("#cart_product_total").html("<span class='money'>" + json.product_total_formatted + "</span>");
        $("#cart_subtotal").html("<span class='money'>" + json.subtotal_formatted + "</span>");
        if (json.shipping !== null)
