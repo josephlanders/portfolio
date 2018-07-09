@@ -55,17 +55,6 @@ INSERT INTO products (
    in_subheading
    );
 
-#SELECT last_insert_id() INTO out_itemid;
-
-#SET descriptiveurlwithid = CONCAT(in_itemurl, "-");
-#SET descriptiveurlwithid = CONCAT(descriptiveurlwithid, out_itemid);
-
-#UPDATE items SET 
-#   itemurl=descriptiveurlwithid
-#   WHERE itemid=out_itemid;
-
-#SELECT out_itemid;
-
 COMMIT;
 SELECT last_insert_id() AS out_productid;
 END;
