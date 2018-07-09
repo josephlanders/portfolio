@@ -80,9 +80,7 @@ using namespace std;
 
             // Otherwise argument
             arguments.push_back(argument);
-        }
-        
-        cout << "A" << endl;
+        }       
 
         it = flags_map.find("-x");
         if (it != flags_map.end()) {
@@ -102,11 +100,10 @@ using namespace std;
         //map_filename = options[3];        
         map_filename = arguments.at(3);        
             //map_filename = arguments[3];
-        cout << "B" << endl;
+
         //vector<string> query_terms_array();// = new vector<string>();
         int last_element = arguments.size();
         
-        cout << "B" << endl;
         for (int i = 4; i < last_element; i++) {
             //query_terms_array.insert(options[i]);
             query_terms_array.push_back(arguments.at(i));
@@ -114,8 +111,6 @@ using namespace std;
         
 
         }
-
-        cout << "C" << endl;
 
         configuration.set_boolean("verbose", verbose);
 
@@ -160,11 +155,6 @@ using namespace std;
                 lexicon_filename,
                 lexicon_file_manager,
                 configuration);
-
-/*        Invlists_manager(invlists_filename,
-                lexicon_filename,
-                lexicon_file_manager,
-                configuration); */
         
         this -> map_file_manager = map_file_manager;
         this -> lexicon_file_manager = lexicon_file_manager;
@@ -182,40 +172,23 @@ using namespace std;
 
             if (term_statistics.null == false)
             {
-            //if (term_statistics != NULL) {
-                //System.out.println(Term_statistics.toString());
-
                 cout << query_term << endl;
-                //System.out.println(query_term);
-                cout << term_statistics.number_of_unique_documents_occurs_in << endl;
-                //System.out.println(Term_statistics.number_of_unique_documents_occurs_in);
+                cout << term_statistics.number_of_unique_documents_occurs_in << endl;               
 
                 map<int, int> occurances_per_document_array = term_statistics.occurances_per_document_array;
-                //HashMap<Integer, Integer> occurances_per_document_array = Term_statistics.occurances_per_document_array;
-
-                //Iterator<Map.Entry<Integer, Integer>> it = occurances_per_document_array.entrySet().iterator();
+               
                 map<int, int>::iterator it;
                 it = occurances_per_document_array.begin();
                 while (it != occurances_per_document_array.end()) {
-                    //while (it.hasNext()) {
-                    //Map.Entry<Integer, Integer> pair = it.next();
-                    //int id = pair.getKey();
-                    //int occurances_per_document = pair.getValue();
                     int id = it -> first;
                     int occurances_per_document = it -> second;
 
-                    //map_file_manager.load_map();
-                    //cout << map_file_manager.map_array.size() << endl;
                     Map_item doc = map_file_manager.get_mapping(id);
 
                     if (doc.null == false)
                     {
-                    //if (doc != NULL) {
-                        //$this->utility->all_doc_array["$ordinal_number"];
-                        //System.out.println(doc.docid + " " + occurances_per_document);
                         cout << doc.docid << " " << occurances_per_document << endl;
                     } else {
-                        //System.out.println("error retrieving doc from map");
                         cout << "error retrieving doc from map" << endl;
                     }
                     it++;
@@ -223,8 +196,6 @@ using namespace std;
 
             } else {
                 cout << "Search term not found: " << query_term << endl;
-                //System.out.println("Search term not found: " + query_term);
-
             }
         }
 
@@ -233,8 +204,6 @@ using namespace std;
     Term_statistics Searcher::search(string query_term) {
         Term_statistics term_statistics;// = NULL;
 
-        //        query_term.
-        //query_term = query_term.replaceAll("-", " ");
         regex e("-");
         query_term = regex_replace(query_term, e, "");
         
@@ -246,14 +215,13 @@ using namespace std;
         
         cout << "got lex item " << endl;
         cout << "lex item .null is" << lexicon_item.null << endl;
-        // != NULL
+
         if (lexicon_item.null == false) {
             cout << "Trying to get inverted list from disk " << endl;
             term_statistics = invlists_manager.get_inverted_index_from_disk(lexicon_item);
             cout << "got inverted list from disk " << endl;
             if (verbose == true) {
                 cout << lexicon_item.toString() << endl;
-                //System.out.println(Lexicon_item.toString());
             }
 
             if (verbose == true) {
@@ -261,7 +229,6 @@ using namespace std;
 
         } else {
             cout << "not in lexicon: " << query_term << endl;
-            //System.out.println("not in lexicon: " + query_term);
         }
 
         return term_statistics;
