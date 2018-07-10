@@ -24,24 +24,6 @@
 #include <iostream>
 
 using namespace std;
-/*
-    // an array of class Term_statistics
-    // the key to this array is the "term" name since this is unique 
-    // and storable as the key
-    string lexicon_filename = "";
-    string map_filename = "";
-    string invlists_filename = "";
-    map<string, Term_statistics> inverted_list;// = NULL;
-    bool compression = false;
-    bool measure_time = false;
-    vector<string> query_terms_array; // = NULL;
-    Lexicon_file_manager lexicon_file_manager;// = NULL;
-    Invlists_manager invlists_manager;// = NULL;
-    Map_file_manager map_file_manager;// = NULL;
-    bool verbose = false;
-    Configuration configuration;// = new Configuration();
-*/
-    //vector<string> query_terms_array = new vector<string>();
 
     Searcher::Searcher() {
     }
