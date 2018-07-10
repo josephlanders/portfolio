@@ -18,21 +18,7 @@ import java.nio.*;
 #include "Configuration.h"
 #include <iostream>
 using namespace std;
-/*
-string invlists_filename = "invlists";
-string lexicon_filename = "lexicon";
-int integer_length = 4; // 2 4 8
-string integer_keyword = "L"; // S = 2, L = 4, Q = 8
-int maximum_fixed_block_size = 0;
-//public $padded_block_size = 3000;
-bool use_buffering = false;
-Lexicon_file_manager lexicon_file_manager;// = NULL;
-bool use_variable_length_disk_blocks = false;
-Invlists_block_memory_cache_simple_array invlists_block_memory_cache;// = NULL;
-Configuration configuration;// = NULL;
-//RandomAccessFile r = null;
-Invlists_file_manager invlists_file_manager;// = NULL;
-*/
+
 Invlists_manager::Invlists_manager() {
 }
 
@@ -51,7 +37,7 @@ Invlists_manager::Invlists_manager(string invlists_filename, string lexicon_file
     this->configuration = configuration;
 
     Invlists_block_memory_cache_simple_array invlists_block_memory_cache(configuration); // = new Invlists_block_memory_cache_simple_array(configuration);
-//    invlists_block_memory_cache = new Invlists_block_memory_cache_simple_array(configuration);
+
     Invlists_file_manager invlists_file_manager(invlists_filename, lexicon_filename,
             lexicon_file_manager, configuration);
 }
@@ -68,34 +54,15 @@ Invlists_manager::Ret_create_blank_data_block Invlists_manager::create_blank_dat
     string padding = "";
     if (pad_block == true) {
         // Ints are always 32 bits in Java
-        //int len = padded_block_size - (num_occurances_in_all_docs + length_of_inverted_list);
+
         // TODO: Padding in java?
         int len = padded_block_size - 4 - 4;
-        //padding = str_pad(string, len, chr(0));
     }
 
     // Assume Binary Safe
-    //String blank_Data_block = num_occurances_in_all_docs + length_of_inverted_list + padding;
-    //string blank_data_block = "";
     string blank_data_block(8, 0);
-    //byte[] blank_Data_block = new byte[8];
-
-    //ByteBuffer bb = ByteBuffer.wrap(blank_Data_block);
-    //bb.order(ByteOrder.LITTLE_ENDIAN);
-    //bb.putInt(num_occurances_in_all_docs);
-    //bb.putInt(length_of_inverted_list);
-
-//    blank_data_block += num_occurances_in_all_docs;
-//    blank_data_block += length_of_inverted_list;
 
     int size_of_block = blank_data_block.length();
-
-    //map<string, void *> ret = new map<string, void *>();
-
-    //ret.insert("size_of_block", size_of_block);
-    //ret.insert("blank_data_block", blank_data_block);
-
-    //return ret;
 
     Ret_create_blank_data_block ret; // = new v;
     ret.size_of_block = size_of_block;
@@ -111,15 +78,6 @@ int Invlists_manager::update_unique_occurances_for_block(int num_occurances_in_i
     return num_occurances_in_invlist;
 }
 
-/*
-struct Ret_create_invlist_block
-{
-    int size_of_block = 0;
-    int content_size =0;
-}; */
-//struct Ret_create_invlist_block;
-//extern Ret_create_invlist_block ret_create_invlist_block
-
 struct Ret_create_blank_data_block
 {
     int size_of_block = 0;
@@ -132,14 +90,11 @@ Invlists_manager::Ret_create_invlist_block Invlists_manager::create_invlist_bloc
     int size_of_block = (int) ret.size_of_block;
     string blank_data_block = (string) ret.blank_data_block;
 
-    //Data_block data_block_class = invlists_block_memory_cache.allocate_new_cache_entry(term, size_of_block, size_of_block);
     int disk_block_size = size_of_block;
     int memory_block_size = size_of_block;
     Data_block data_block_class = Data_block(term, 0, disk_block_size, memory_block_size, 0);
     data_block_class = invlists_block_memory_cache.allocate_new_cache_entry(term, data_block_class);
-    //int disk_block_size = size_of_block;
 
-    //Data_block_class -> header_bytes = blank_Data_block;
     // Block is already packed
     data_block_class.header_bytes = blank_data_block;
     data_block_class.disk_block_size = disk_block_size;
@@ -154,8 +109,6 @@ Invlists_manager::Ret_create_invlist_block Invlists_manager::create_invlist_bloc
         data_block_class.memory_block_size = content_size;
     } else {
         data_block_class.content_size = content_size;
-        //$data_block_class -> disk_block_size  = ; Remains unchanged since fixed length blocks
-        //$data_block_class -> memory_block_size = $content_size; ; TODO?
     }
 
     Ret_create_invlist_block ret2; // = new map<string, void *>();
@@ -176,33 +129,18 @@ vector<int> Invlists_manager::extract_header_efficient(Data_block Data_block_cla
         header[1] = 0;
 
     } else {
-        //ByteBuffer bb = ByteBuffer.wrap(header_bytes, 0, 8);
-        //bb.order(ByteOrder.LITTLE_ENDIAN);
         string header_text = header_bytes.substr(0, 4);
         int value = 0;
-        /*
-            for (int i = 0; i < 3; ++i) {
-                value |= header_text[i];
-                value <<= 8;
-            }*/
         
 for (int i = 0; i < 4; ++i) {
     value += header_text[i] << (24 - i * 8);    // |= could have also been used
     cout << +value << endl;
 }
-
         
-        //header[0] = value;
         header.push_back(value);
 
         string header_text2 = header_bytes.substr(4, 4);
         int value2 = 0;
-        /*
-            for (int i = 0; i < 3; ++i) {
-                value2 |= header_text2[i];
-                value2 <<= 8;
-            }
-         * */
         
 for (int i = 0; i < 4; ++i) {
     value2 += header_text2[i] << (24 - i * 8);    // |= could have also been used
@@ -220,10 +158,6 @@ Data_block Invlists_manager::write_header_efficient(Data_block data_block_class,
     string header_bytes = data_block_class.header_bytes;
 
     string new_header_bytes(8, 255); // = new byte[8];
-    //ByteBuffer bb = ByteBuffer.wrap(new_header_bytes);
-    //bb.order( ByteOrder.LITTLE_ENDIAN);
-    //bb.putInt(header[0]);
-    //bb.putInt(header[1]);
     
     int somelong = header[0];
     
@@ -232,31 +166,21 @@ new_header_bytes[1] = (somelong >> 16) & 0xFF;
 new_header_bytes[2] = (somelong >> 8) & 0xFF;
 new_header_bytes[3] = somelong & 0xFF;
 
-    //new_header_bytes += header[0];
-
     int somelong2 = header[1];
     
 new_header_bytes[4] = (somelong2 >> 24) & 0xFF;
 new_header_bytes[5] = (somelong2 >> 16) & 0xFF;
 new_header_bytes[6] = (somelong2 >> 8) & 0xFF;
 new_header_bytes[7] = somelong2 & 0xFF;
-
-    //new_header_bytes += header[1];
     
     if (header_bytes.length() < 8) {
-        //new_header_bytes = new byte[8];
-        //System.out.println("this condition should never be reached - header broken?");
         cout << "this condition should never be reached - header broken?" << endl;
-        //System.exit(0);
     } else {
 
     }
 
-    //Data_block_class.header_bytes = new_header_bytes;
     data_block_class.header_bytes = new_header_bytes;
     
-    //cout << data_block_class.header_bytes.length() << endl;
-
     return data_block_class;
 }
 
@@ -330,23 +254,12 @@ Invlists_manager::Ret_updated_inverted_index Invlists_manager::update_inverted_i
     //int end_of_inv_list = 0 + 4 + 4 + length_of_inv_list;
     int end_of_inv_list = length_of_inv_list;
 
-    int expected_size_in_bytes = occurances_per_document_array.size() * 2 * 4;
-    //byte[] b = new byte[expected_size_in_bytes];
-    //ByteBuffer bb = ByteBuffer.wrap(b);
-    //bb.order(ByteOrder.LITTLE_ENDIAN);
-    
+    int expected_size_in_bytes = occurances_per_document_array.size() * 2 * 4;    
 
     int id = 0;
     int value = 0;
-    //Iterator < Map.Entry<Integer, Integer>> it = occurances_per_document_array.entrySet().iterator();
     map<int, int>::iterator it = occurances_per_document_array.begin();
-    //while (it.hasNext()) {
     while (it != occurances_per_document_array.end()) {
-
-
-        //Map.Entry<Integer, Integer> pair = it.next();
-        //id = pair.getKey();
-        //value = pair.getValue();
 
         id = it -> first;
         value = it -> second;
@@ -367,8 +280,6 @@ stringvalue[3] = value & 0xFF;
         additional_inverted_list_bytes += stringid;
         additional_inverted_list_bytes += stringvalue;
 
-        //bb.putInt(id);
-        //bb.putInt(value);
         it++;
     }
 
@@ -377,12 +288,7 @@ stringvalue[3] = value & 0xFF;
     
     string combined = inverted_list_bytes + additional_inverted_list_bytes;
     int new_length_of_inv_list = combined.length();
-    
-    
-    //System.arraycopy(inverted_list_bytes, 0, combined, 0, inverted_list_bytes.length);
-    //System.arraycopy(b, 0, combined, inverted_list_bytes.length, b.length);
-
-    //Data_block_class.inverted_list_bytes = null;
+        
     data_block_class.inverted_list_bytes = combined;
     
     Ret_updated_inverted_index ret; // = new v;
