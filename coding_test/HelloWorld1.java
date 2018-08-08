@@ -130,6 +130,7 @@ public class HelloWorld{
         
         if (error == true)
         {
+            //We should probably throw an exception in Java :p
             return worker_list;
         }
         
