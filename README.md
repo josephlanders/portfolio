@@ -10,6 +10,6 @@ I've included examples of:<br/><br/>
     Smart Templating Language (.tpl)<br/>
     SQL (for MariaDB Galera Cluster)<br/>
     <br/>
-    Information Retrieval A1 was coded in 3 languages out of interest to test performance of php, Java and C++.<br/>
+    Information Retrieval A1 was coded in 3 languages out of interest to test performance of PHP, Java and C++.<br/>
     <br/>
     ShopsBee is coded in PHP and is an ecommerce solution, the client site templates use the Smarty Templating Language. Thus 4 languages are used for this solution (PHP, HTML, CSS, JQuery, Smarty, SQL)
