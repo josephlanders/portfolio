@@ -242,6 +242,7 @@ public class HelloWorld{
         
         if (error == true)
         {
+            //We should probably throw an exception in Java :p
             return worker_list;
         }
         
@@ -310,6 +311,7 @@ public class HelloWorld{
         // Could re-factor this but it will make the code below too nested.
         if (error == true)
         {
+            //We should probably throw an exception in Java :p
             return;
         }
     
@@ -352,6 +354,7 @@ public class HelloWorld{
     {
         if (sublevel > 5)
         {
+            //We should probably throw an exception in Java :p
             return;
         }
         
