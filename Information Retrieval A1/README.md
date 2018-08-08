@@ -1,4 +1,4 @@
-I haven't uploaded the entire code as it could result in plaigarism from RMIT students.<br/>
+I haven't uploaded the entire code as it could result in plaigarism from RMIT students (if they somehow find this obscure page :P.<br/>
 If you'd like to see the entire assignment in the 3 languages I can email you the code<br/>
 
 The assignment is to index a large list of DOC elements which contain TEXT elements and are news documents.<br/>
