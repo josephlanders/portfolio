@@ -361,9 +361,7 @@ or
 
 
   <script>
-   //var $countries = new Object();
    var $states = new Object();
-   //var $states = [];
 
    function cart_load(event)
    {
@@ -616,12 +614,6 @@ $text = "";
        $.each($data, function (index, element)
        {
            //0 htmlelement object
-           //alert(index);
-           //alert(element);
-           //alert($(element));
-           //$(this).attr("data-parcelid");
-                   //$(element).attr("data-parcelid");
-           //alert(element.attr("data-parcelid"));
            $elementParcelID = $(element).attr("data-parcelid");
            $elementProductID = $(element).attr("data-productid");
            $elementVariantID = $(element).attr("data-variantid");
@@ -773,8 +765,6 @@ $text = "";
        });
        
        $('#cartbar_count').html(json.cart_count);
-                  //} 
-       //return;
        
        $("#cart_product_total").html("<span class='money'>" + json.product_total_formatted + "</span>");
        $("#cart_subtotal").html("<span class='money'>" + json.subtotal_formatted + "</span>");
