@@ -55,7 +55,6 @@ class model {
     private $address_cache = null;
     public $cart = null;
     private $search_url = null;
-    #private $site_name = "mogsanddogs.com.au"
     public $site_version = -1;
     public $site_id = -1;
     private $session_store = null;
