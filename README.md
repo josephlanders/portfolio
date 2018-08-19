@@ -14,5 +14,5 @@ I've included examples of:<br/><br/>
     <br/>
     ShopsBee is coded in PHP and is an ecommerce solution, the client site templates use the Smarty Templating Language. Thus 4/5 languages are used for this solution (PHP, HTML, CSS, JQuery, Smarty, SQL)
     <br/>
+    Algorithms and Analysis and Database Systems are in C.
     <br/>
-    I can upload more code examples in other language (assembly, C, C#, OpenGL) on Monday 13th August once I fix my laptop.
