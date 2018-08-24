@@ -9,6 +9,8 @@ I've included examples of:<br/><br/>
     CSS (.css) <br/>
     Smart Templating Language (.tpl)<br/>
     SQL (for MariaDB Galera Cluster)<br/>
+    C#
+    ASP.NET
     <br/>
     Information Retrieval A1 was coded in 3 languages out of interest to test performance of PHP, Java and C++.<br/>
     <br/>
