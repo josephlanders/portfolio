@@ -1,0 +1,90 @@
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> 12345 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text content of the special document is not a joke. oracle mad mad
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> 1225123 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text extraordinary special good content of the document. mad
+</TEXT>
+</DOC>
+
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> 35 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text wow content of the document. wow wow
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> ndg </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text hello content of the document.
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> gad </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text content of the document. wow
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> nfgb </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline.
+</HEADLINE>
+...
+<TEXT>
+The text content of the document document. wow wow
+</TEXT>
+</DOC>
