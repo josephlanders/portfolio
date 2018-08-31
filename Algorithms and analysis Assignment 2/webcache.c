@@ -4,6 +4,8 @@
  * Student Number:    s3163776@student.rmit.edu.au
  * Alternate contact: josephlanders@gmail.com
  * Yallara Username:  jlanders / s3163776
+ *
+ * This file contains the code for the assignment.
  * 
  * This file is the back-end code that sits between the driver and the ADT
  * specific code.
@@ -14,7 +16,7 @@
 #include "webcache.h"
 #include "resourcenode-main.h"
 #include "resourcenode-hash.h"
-#include "resourcenode-queue.h"
+#include "resourcenode-heap.h"
 
 /*
  * Initialise the webcache struct 
@@ -24,16 +26,10 @@
  * 
  * returns TRUE or FALSE to indicate success or failure of the operation
  */
-int WebCacheInit(WebCache *wc, int cachesize)
+int WebCacheInit(WebCache *wc, unsigned int cachesize)
 {
     int i = 0;
 
-    /*
-     * Set the pointers to the first & last resource node 
-     * in the queue to NULL 
-     */
-    wc -> head = NULL;
-    wc -> tail = NULL;
     wc -> bytesused = 0;
     wc -> cachesize = cachesize;
     wc -> pagehitcount = 0;
@@ -65,6 +61,27 @@ int WebCacheInit(WebCache *wc, int cachesize)
         wc -> hashtable[i] = NULL;
     }
 
+    /*
+     * Allocate memory for an array of pointers to resources 
+     * This means allocate the heap array 
+     */
+    if ((wc -> heap = (resourcenode **)
+                      malloc (HEAP_INITIALSIZE * sizeof(resourcenode *)))
+            == NULL)
+    {
+        free(wc -> hashtable);
+        return FALSE;
+    }
+
+    /*
+     * Not sure if heap pointers are set to NULL on malloc
+     * so NULL to be safe 
+     */
+    for (i = 0; i < HEAP_INITIALSIZE; i++)
+    {
+        wc -> heap[i] = NULL;
+    }
+
     return TRUE;
 }
 
@@ -79,10 +96,10 @@ int WebCacheInit(WebCache *wc, int cachesize)
  */
 int WebCacheRetrieve(WebCache *wc,
                      char *resource,
-                     int bytes)
+                     unsigned int bytes)
 {
     /* Stores status of retrieve function call */
-    int response = FALSE;
+    int response = 0;
 
     /*
      * The following code is system specific
@@ -91,7 +108,6 @@ int WebCacheRetrieve(WebCache *wc,
      * works out how long the operation took, 
      * adding the time to a cumulative count 
      */
-
 #if defined(linux) || defined (__linux)
 
     clock_t ticks1 = { 0 };
@@ -124,6 +140,7 @@ int WebCacheRetrieve(WebCache *wc,
 
     return response;
 
+
 }
 
 /*
@@ -137,9 +154,8 @@ int WebCacheRetrieve(WebCache *wc,
  */
 int WebCacheInsert(WebCache *wc,
                    char *resource,
-                   int bytes)
+                   unsigned int bytes)
 {
-    /* Stores status of retrieve function call */
     int response = 0;
 
     /*
@@ -192,8 +208,8 @@ int WebCacheInsert(WebCache *wc,
  */
 void WebCachePrint(WebCache *wc)
 {
-    /* Iterate through queue printing */
-    printNodes(wc -> head);
+    /* Iterate through heap printing */
+    printNodes(wc);
     return;
 }
 
@@ -260,6 +276,7 @@ void WebCacheDisplayStats(WebCache *wc)
     double diskcost = 0;
     
     diskcost = getInsertionTime(wc);
+    
 
     /* System specific code to calculate correct access and insertion times */
 #if defined (__linux) || defined (linux)
@@ -307,9 +324,9 @@ void WebCacheDisplayStats(WebCache *wc)
            / (wc -> pagerequestcount - wc -> pagehitcount));
     /* Could also use wc - itemcount + wc - evicted count as divisor */
     
-    printf(STR_STATS_DISK_INSERTION_COST, diskcost);
+        printf(STR_STATS_DISK_INSERTION_COST, diskcost);
     printf(STR_STATS_DISK_INSERTION_COST_AVG, diskcost 
-    /  (wc -> pagerequestcount - wc -> pagehitcount));
+    / (wc -> pagerequestcount - wc -> pagehitcount));
 
     printf("\n\n");
     fflush(stdout);
@@ -324,15 +341,20 @@ void WebCacheDisplayStats(WebCache *wc)
  */
 int WebCacheDestroy(WebCache *wc)
 {
-    /*
-     * If the queue head exists,
-     * this means there are items in the cache,
-     * so free them 
-     */
-    if (wc -> head != NULL)
+    int i = 0;
+
+    /* For all heap items, de-allocate them from memory */
+    for (i = 0; i < wc -> itemcount; i++)
     {
-        freeResources(wc -> head);
+        /* Free the contents of the resource node */
+        freeResources(wc -> heap[i]);
+
+        /* Free the resource node */
+        free(wc -> heap[i]);
     }
+
+    /* Now we can free the heap */
+    free (wc -> heap);
 
     /* Now we can free the hashtable safely */
     free(wc -> hashtable);

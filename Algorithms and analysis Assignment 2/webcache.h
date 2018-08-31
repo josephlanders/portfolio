@@ -18,8 +18,7 @@
 
 typedef struct WebCache
 {
-    struct resourcenode * head;
-    struct resourcenode * tail;
+    struct resourcenode ** heap;
     struct resourcenode ** hashtable;
     unsigned long int bytesused;
     unsigned long int cachesize;
@@ -38,7 +37,10 @@ WebCache;
 #define STRING_SIZE (int) 1024
 
 /* Size of the hashtable */
-#define HASHTABLE_SIZE (int) 512
+#define HASHTABLE_SIZE (unsigned int) 512
+
+/* The initial size of the heap */
+#define HEAP_INITIALSIZE (unsigned int) 50000
 
 /*
  * Initialise the webcache struct 
@@ -48,7 +50,7 @@ WebCache;
  * 
  * returns TRUE or FALSE to indicate success or failure of the operation
  */
-int WebCacheInit(WebCache *wc, int cachesize);
+int WebCacheInit(WebCache *wc, unsigned int cachesize);
 
 /*
  * Get a resource from the webcache 
@@ -61,7 +63,7 @@ int WebCacheInit(WebCache *wc, int cachesize);
  */
 int WebCacheRetrieve(WebCache *wc,
                      char *resource,
-                     int bytes);
+                     unsigned int bytes);
 
 /*
  * Insert a resource into the webcache 
@@ -74,7 +76,7 @@ int WebCacheRetrieve(WebCache *wc,
  */
 int WebCacheInsert(WebCache *wc,
                    char *resource,
-                   int bytes);
+                   unsigned int bytes);
 
 /*
  * Print the contents of the webcache 
