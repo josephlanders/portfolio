@@ -1,0 +1,90 @@
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-1 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline contains 
+</HEADLINE>
+...
+<TEXT>
+london-to-edinburgh
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-2 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline contains words
+</HEADLINE>
+...
+<TEXT>
+Extraordinarily the very interesting text
+</TEXT>
+</DOC>
+
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-3 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline contains a sheep
+</HEADLINE>
+...
+<TEXT>
+Sometimes the very interesting text
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-4 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline is about gorbachev the leader of the USSR
+</HEADLINE>
+...
+<TEXT>
+This could be the very interesting text and a nice headline
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-5 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline doesn't go anywhere
+</HEADLINE>
+...
+<TEXT>
+much wow the extraordinary text
+</TEXT>
+</DOC>
+
+<DOC>
+<DOCNO> LA010189-0001 </DOCNO>
+<DOCID> DOC-6 </DOCID>
+<DATE> 0123/123/123 </DATE>
+<SECTION> .6usdgsf </SECTION>
+<LENGTH> .5asdd </LENGTH>
+<HEADLINE>
+The article headline is not seen! the end
+</HEADLINE>
+...
+<TEXT>
+The last bit of extraordinary text compared to the headline
+</TEXT>
+</DOC>
