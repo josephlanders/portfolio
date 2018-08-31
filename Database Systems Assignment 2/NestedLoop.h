@@ -9,8 +9,6 @@
  ****************************************************************************/
 
 #include <sys/stat.h>
-#include <sys/types.h>
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,6 +40,7 @@
 #define STR_INSUFFICIENT_ARGS "Insufficient command line arguments"
 #define STR_FILE_ERROR "Error opening file - quitting to console"
 #define STR_BUFFER "Buffer size too small, must be at least %d"
+
 #define STR_TOOMANY_ARGS "Too many command line arguments"
 
 /* Minimum size of the page in bytes */

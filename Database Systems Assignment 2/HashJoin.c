@@ -4,6 +4,8 @@
  * Student Number:    s3163776@student.rmit.edu.au
  * Alternate contact: josephlanders@gmail.com
  * Yallara Username:  jlanders / s3163776
+ *
+ * This file contains the code for the assignment
  * 
  * Joins two data files using the Hash Join method.
  ****************************************************************************/
