@@ -1,11 +1,10 @@
 # portfolio
-<br/>    
-    Information Retrieval A1 was coded in 3 languages out of interest to test performance of PHP, Java and C++. - a masters project<br/>
-    <br/>
-    Algorithms and Analysis and Database Systems are in C - a second year project.
-    <br/>
-    Web development technologies is coded in C# - a first year project.
-    <br/>
+Web development technologies is coded in C# - a first year project.
+<br/><br/>
+Algorithms and Analysis and Database Systems are in C - a second year project.
+<br/><br/>    
+Information Retrieval A1 was coded in 3 languages out of interest to test performance of PHP, Java and C++. - a masters project<br/>
+<br/>        
 
 I've included examples of:<br/><br/>
     Java (.java)<br/>
