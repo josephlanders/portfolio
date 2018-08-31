@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://webservices.imacination.com/validate/Validate.jws" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:intf="http://webservices.imacination.com/validate/Validate.jws" targetNamespace="http://webservices.imacination.com/validate/Validate.jws" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types />
+  <wsdl:message name="validateNumberResponse">
+    <wsdl:part name="validateNumberReturn" type="xsd:boolean" />
+  </wsdl:message>
+  <wsdl:message name="validateCardRequest">
+    <wsdl:part name="ccNumber" type="xsd:string" />
+    <wsdl:part name="ccDate" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="validateNumberRequest">
+    <wsdl:part name="ccNumber" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="validateCardResponse">
+    <wsdl:part name="validateCardReturn" type="xsd:boolean" />
+  </wsdl:message>
+  <wsdl:portType name="Validate">
+    <wsdl:operation name="validateCard" parameterOrder="ccNumber ccDate">
+      <wsdl:input name="validateCardRequest" message="intf:validateCardRequest" />
+      <wsdl:output name="validateCardResponse" message="intf:validateCardResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="validateNumber" parameterOrder="ccNumber">
+      <wsdl:input name="validateNumberRequest" message="intf:validateNumberRequest" />
+      <wsdl:output name="validateNumberResponse" message="intf:validateNumberResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ValidateSoapBinding" type="intf:Validate">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="validateCard">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="validateCardRequest">
+        <wsdlsoap:body use="encoded" namespace="http://DefaultNamespace" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="validateCardResponse">
+        <wsdlsoap:body use="encoded" namespace="http://webservices.imacination.com/validate/Validate.jws" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="validateNumber">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="validateNumberRequest">
+        <wsdlsoap:body use="encoded" namespace="http://DefaultNamespace" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output name="validateNumberResponse">
+        <wsdlsoap:body use="encoded" namespace="http://webservices.imacination.com/validate/Validate.jws" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ValidateService">
+    <wsdl:port name="Validate" binding="intf:ValidateSoapBinding">
+      <wsdlsoap:address location="http://webservices.imacination.com/validate/Validate.jws" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

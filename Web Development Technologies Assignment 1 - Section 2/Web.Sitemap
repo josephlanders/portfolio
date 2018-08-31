@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+    <siteMapNode url="~/home.aspx" title="Home"  description="Home page">
+        <siteMapNode url="~/Customer pages/CreateProfile.aspx" title="Create Profile"  description="Register as a Customer" />
+      <siteMapNode url="~/Customer pages/Category.aspx" title="Products"  description="Search for products by Category" >
+      </siteMapNode>
+        <siteMapNode url="~/Admin pages/admin.aspx" title="Admin"  description="Administrative login">
+           <siteMapNode url="~/Admin pages/ManageProfiles.aspx" title="Manage profiles"  description="Add/Update/Delete profiles" />
+           <siteMapNode url="~/Admin pages/ManageProducts.aspx" title="Manage products"  description="Add/Update/Delete products" />
+           <siteMapNode url="~/Admin pages/ManageCategories.aspx" title="Manage categories"  description="Add/Update/Delete categories" />
+           <siteMapNode url="~/Admin pages/Crystal.aspx" title="Crystal report"  description="A crystal report" />
+        </siteMapNode>
+        <siteMapNode url="~/Sitemap.aspx" title="Sitemap"  description="You are here" />
+    </siteMapNode>
+</siteMap>

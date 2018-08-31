@@ -1,0 +1,53 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register Assembly="System.Web.Extensions, Version=1.0.61025.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"
+    Namespace="System.Web.UI" TagPrefix="asp" %>
+<%@ Register TagPrefix="Navigation" Src="~/User Controls/Navigation.ascx" TagName="NavigationControl" %>
+<%@ Register TagPrefix="LoginControl" Src="~/User Controls/LoginControl.ascx" TagName="LoginControl" %>
+<%@ Register TagPrefix="ShoppingCart" Src="~/User Controls/ShoppingCart.ascx" TagName="ShoppingControl" %>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Untitled Page</title>
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+</head>
+<body>
+    <form id="form1" runat="server">
+           <div id="master">
+            <ajaxToolkit:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" />
+         
+            <div id="header">
+               <asp:Image CssClass="header2" ID="ImgBanner" runat="server" ImageUrl="~/Images/logo2.png" />
+            <asp:LinkButton CssClass="mastercartlnk" runat="server" id="LnkCart" CausesValidation="False" PostBackUrl="~/Customer Pages/ReviewOrder.aspx" >Shopping Cart</asp:LinkButton>
+            <asp:LinkButton CSSClass="masteradminlnk" ID="LnkAdmin" PostBackUrl="~/Admin pages/admin.aspx" runat="server" CausesValidation="False" >Admin Log-in</asp:LinkButton>
+            </div>
+        <div id="sidebar">
+            <div id="sidebarcart">
+                <ShoppingCart:ShoppingControl ID="mycart" runat="server"/>
+            </div>
+            <div id="sidebarnav">
+                <Navigation:NavigationControl runat="server" id="nav"/>
+            </div>
+            <div id="sidebarlogin">
+                <LoginControl:LoginControl runat="server" id="myLogin"/>
+            </div>
+        </div>
+        <div id="content">
+            <asp:SiteMapPath CssClass="currentpath" ID="SMPCurrent" runat="server" Font-Underline="True" ParentLevelsDisplayed="0" />
+            <asp:Label CssClass="errorlabel" ID="LblError" runat="server" />
+            <asp:contentplaceholder id="ContentPlaceHolder1" runat="server" />
+        </div>
+                <div id="footer">
+            <asp:Label CssClass="footertime" ID="LblDateTime" runat="server" />
+            <asp:Label CssClass="footercopy" ID="LblCopyright" runat="server" Text="(c) Joseph Landers 2008" />
+        </div>
+    </div>
+
+    </form>
+</body>
+</html>
