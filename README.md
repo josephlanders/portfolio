@@ -1,5 +1,5 @@
 # portfolio
-Bank_coding_test - Java, PHP, GoLang
+Bank_coding_test - Java, PHP, GoLang. JavaScript
 <br/><br/>
 Web development technologies is coded in C# - a first year project.
 <br/><br/>
