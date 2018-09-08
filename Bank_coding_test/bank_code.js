@@ -56,9 +56,6 @@ class Bank_code {
 
             var customers_sharing_accounts = new Map();
             
-            for (var [key3, test] of customers_sharing_accounts) {
-            }
-            
             for (var [key2, account_by_id] of cust_accounts_by_id) {
                 var account = this.accounts.get(key2);
                 var customers_by_id = account.get_customers_as_map_by_id();
@@ -72,17 +69,15 @@ class Bank_code {
         }
         
         var x = "";
-    for (x in customers_that_share_the_same_accounts) {
-        var list_of_customers = customers_that_share_the_same_accounts[x];
-        var line = "\nCustomers: ";
-        for (var [key2, customer_id] of list_of_customers) {
-            line += customer_id + ",";
-
+        for (x in customers_that_share_the_same_accounts) {
+            var list_of_customers = customers_that_share_the_same_accounts[x];
+            var line = "\nCustomers: ";
+                for (var [key2, customer_id] of list_of_customers) {
+                    line += customer_id + ",";
+                }
+        
+            console.log(line);
         }
-        
-        console.log(line);
-    }
-        
     }
     
     read_data_in()
@@ -155,3 +150,4 @@ class Bank_code {
 
 
 let bank_code = new Bank_code(); 
+ 
