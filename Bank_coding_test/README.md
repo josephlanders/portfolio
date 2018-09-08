@@ -1,3 +1,4 @@
+<p>
 PHP output:
 Customers: 1,3,2,
 Customers: 1,2,5,3,
@@ -25,3 +26,4 @@ Customers: 1,2,5,3,
 Customers: 1,3,2,
 Customers: 4,5,
 Customers: 2,5,4,
+</p>
