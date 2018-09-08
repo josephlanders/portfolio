@@ -71,7 +71,7 @@ class Bank_code {
         var x = "";
         for (x in customers_that_share_the_same_accounts) {
             var list_of_customers = customers_that_share_the_same_accounts[x];
-            var line = "\nCustomers: ";
+            var line = "Customers: ";
                 for (var [key2, customer_id] of list_of_customers) {
                     line += customer_id + ",";
                 }
