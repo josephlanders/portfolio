@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bank;
 
 import java.util.ArrayList;
@@ -33,8 +28,6 @@ public class Bank {
 
     public Bank() {
         Object[] ret = this.read_data_in();
-        //this.customers = ArraList<Customers> ret[0];
-        //this.accounts = ret[1];
 
         ArrayList<ArrayList<Integer>> customers_that_share_the_same_accounts = new ArrayList<>();
 
@@ -46,9 +39,7 @@ public class Bank {
             Customer customer = pair.getValue();
 
             ArrayList<Integer> cust_accounts_by_id = customer.get_accounts_as_list_by_id();
-
-            //ArrayList<Integer> customers_sharing_accounts = new ArrayList<>();
-
+            
             HashSet<Integer> s = new HashSet<Integer>();
             Iterator<Integer> it2 = cust_accounts_by_id.iterator();
 
@@ -60,6 +51,7 @@ public class Bank {
 
                 HashSet<Integer> s2 = new HashSet<Integer>(customers_by_id);
 
+                //HashSet merge
                 s.addAll(s2);
             }
 
@@ -182,6 +174,7 @@ class Customer {
 
     private HashMap<Integer, Account> accounts_obj = new HashMap<>();
     //private ArrayList<Integer> account_ids = new ArrayList<>();
+    
     public Integer customer_id = null;
 
     public Customer(Integer customer_id) {
