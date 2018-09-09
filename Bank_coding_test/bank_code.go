@@ -19,11 +19,12 @@ var customers map[int]Customer
 var accounts map[int]Account
 
 func main() {
-    fmt.Println("Hi")
-    
     customers = make(map[int]Customer);
     accounts = make(map[int]Account);
-    
+    process_data();
+}
+ 
+func process_data() {
     read_data_in();
     
     customers_that_share_the_same_accounts := make([]map[int]int, 10);
@@ -141,10 +142,6 @@ func read_data_in() {
         accounts[account3.account_id] = account3;
         accounts[account4.account_id] = account4;
         accounts[account5.account_id] = account5;
-
-
-//fmt.Println("map:", customers);
-//fmt.Println("map:", accounts);
 
         //return ret;
     
