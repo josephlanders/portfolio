@@ -1,6 +1,7 @@
 <?php //php 7.0.8
 
 $code_thing = new code_thing();
+$code_thing -> process_data();
    
  class code_thing
     {
@@ -9,14 +10,14 @@ $code_thing = new code_thing();
        
         public function __construct()
         {
+        }
+
+        public function process_data()
+        {
             list($customers, $accounts) = $this -> read_data_in();
             $this -> customers = $customers;
             $this -> accounts = $accounts;
-            $this -> process_data($customers, $accounts);
-        }
 
-        public function process_data($customers, $accounts)
-        {
             $customers_that_share_the_same_accounts = array();
             //$customers = $this -> customers;
             //$accounts = $this -> accounts;
