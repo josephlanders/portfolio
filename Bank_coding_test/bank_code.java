@@ -77,7 +77,7 @@ public class Bank {
 
     }
 
-    public Object[] read_data_in() {
+    private Object[] read_data_in() {
         /* 
             1 => 101, 102
             2 => 102, 103, 104
