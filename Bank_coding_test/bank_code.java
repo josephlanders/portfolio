@@ -1,4 +1,4 @@
-package anz;
+package bank_code;
 
 import java.util.ArrayList;
 import java.util.HashMap;
