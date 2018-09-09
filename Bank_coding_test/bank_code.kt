@@ -85,7 +85,8 @@ class Bank_code()
                 line += "${customer_id},";
             }
         
-            System.out.println(line);
+            //System.out.println(line);
+            println(line);
         }
 	}
 
