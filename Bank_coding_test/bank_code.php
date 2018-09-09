@@ -55,7 +55,7 @@ $code_thing -> process_data();
            
         }
 
-        public function read_data_in()
+        private function read_data_in()
         {
             // foreach $customer $accounts
            
