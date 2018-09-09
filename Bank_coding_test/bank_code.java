@@ -1,4 +1,4 @@
-package bank;
+package anz;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +17,7 @@ public class Bank {
     private HashMap<Integer, Customer> customers = new HashMap<>();
     private HashMap<Integer, Account> accounts = new HashMap<>();
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
-
         Bank code_thing = new Bank();
     }
 
@@ -39,7 +34,7 @@ public class Bank {
             Customer customer = pair.getValue();
 
             ArrayList<Integer> cust_accounts_by_id = customer.get_accounts_as_list_by_id();
-            
+
             HashSet<Integer> s = new HashSet<Integer>();
             Iterator<Integer> it2 = cust_accounts_by_id.iterator();
 
@@ -51,7 +46,6 @@ public class Bank {
 
                 HashSet<Integer> s2 = new HashSet<Integer>(customers_by_id);
 
-                //HashSet merge
                 s.addAll(s2);
             }
 
@@ -173,8 +167,7 @@ public class Bank {
 class Customer {
 
     private HashMap<Integer, Account> accounts_obj = new HashMap<>();
-    //private ArrayList<Integer> account_ids = new ArrayList<>();
-    
+    private HashMap<Integer, Integer> account_ids = new HashMap<>();
     public Integer customer_id = null;
 
     public Customer(Integer customer_id) {
@@ -183,42 +176,42 @@ class Customer {
 
     public void add_account(Account account_obj) {
         Integer account_id = account_obj.account_id;
-        this.accounts_obj.put(account_id, account_obj);
+        this.accounts_obj.put(account_id, account_obj);        
+        this.account_ids.put(account_id, account_id);
     }
-
+    
     public ArrayList<Integer> get_accounts_as_list_by_id() {
-        ArrayList<Integer> accounts_as_list = new ArrayList<>();
-
-        Iterator<Map.Entry<Integer, Account>> it = accounts_obj.entrySet().iterator();
-
-        while (it.hasNext()) {
-            Map.Entry<Integer, Account> pair = it.next();
-            Integer key = pair.getKey();
-            Account cust_account = pair.getValue();
-
-            Integer account_id = cust_account.account_id;
-            accounts_as_list.add(account_id);
-        }
-
-        return accounts_as_list;
+        ArrayList<Integer> ids = new ArrayList<>(this.account_ids.values());
+        return ids;
     }
+
+    
+    public HashMap<Integer,Integer> get_accounts_as_map_by_id() {
+        return this.account_ids;
+    }
+    
 }
 
 class Account {
 
-    private ArrayList<Integer> customer_ids = new ArrayList<>();
+    private HashMap<Integer, Integer> customer_ids = new HashMap<>();
     public Integer account_id = null;
 
     public Account(Integer account_id) {
         this.account_id = account_id;
     }
-
     public void add_customer(Customer customer) {
         Integer customer_id = customer.customer_id;
-        this.customer_ids.add(customer_id);
+        this.customer_ids.put(customer_id, customer_id);
     }
 
-    public ArrayList<Integer> get_customers_as_list_by_id() {
+    public HashMap<Integer, Integer> get_customers_as_map_by_id() {
         return this.customer_ids;
+    }   
+    
+    public ArrayList<Integer> get_customers_as_list_by_id() {
+        ArrayList<Integer> ids = new ArrayList<>(this.customer_ids.values());
+        return ids;
     }
+
 }
