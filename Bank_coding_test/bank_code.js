@@ -46,6 +46,10 @@ class Bank_code {
     {
         this.customers = new Map();
         this.accounts = new Map();
+    }
+    
+    process_data()
+    {
         this.read_data_in();
         
         var customers_that_share_the_same_accounts = [];
@@ -150,4 +154,4 @@ class Bank_code {
 
 
 let bank_code = new Bank_code(); 
- 
+bank_code.process_data();
