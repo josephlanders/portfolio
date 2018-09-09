@@ -1,4 +1,4 @@
-package bank_code;
+package bank;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +19,14 @@ public class Bank {
 
     public static void main(String[] args) {
         Bank code_thing = new Bank();
+        code_thing.process_data();
     }
 
     public Bank() {
+    }
+    
+    public void process_data()
+    {
         Object[] ret = this.read_data_in();
 
         ArrayList<ArrayList<Integer>> customers_that_share_the_same_accounts = new ArrayList<>();
@@ -69,6 +74,7 @@ public class Bank {
             }
 
         }
+
     }
 
     public Object[] read_data_in() {
@@ -200,6 +206,7 @@ class Account {
     public Account(Integer account_id) {
         this.account_id = account_id;
     }
+
     public void add_customer(Customer customer) {
         Integer customer_id = customer.customer_id;
         this.customer_ids.put(customer_id, customer_id);
