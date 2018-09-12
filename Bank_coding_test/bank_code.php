@@ -8,11 +8,11 @@ $code_thing -> process_data();
         private $customers = array();
         private $accounts = array();
        
-        public function __construct()
+        function __construct()
         {
         }
 
-        public function process_data()
+        function process_data()
         {
             list($customers, $accounts) = $this -> read_data_in();
             $this -> customers = $customers;
@@ -155,13 +155,13 @@ $code_thing -> process_data();
         private $accounts_id = array();
         public $customer_id = null;
        
-        public function __construct($customer_id)
+        function __construct($customer_id)
         {
             $this -> customer_id = $customer_id;
         }
        
        
-        public function add_account($account)
+        function add_account($account)
         {
             $accounts_obj = $this -> accounts_obj;
            
@@ -171,7 +171,7 @@ $code_thing -> process_data();
             $this -> accounts_obj = $accounts_obj;
         }
        
-        public function get_accounts_as_list_by_id()
+        function get_accounts_as_list_by_id()
         {
             $accounts_as_list = array();
             foreach($this -> accounts_obj as $key => $cust_account)
@@ -191,12 +191,12 @@ $code_thing -> process_data();
         private $customer_ids = array();
         public $account_id = null;
        
-        public function __construct($account_id)
+        function __construct($account_id)
         {
             $this -> account_id = $account_id;
         }
        
-        public function add_customer($customer)
+        function add_customer($customer)
         {
             $customer_ids = $this -> customer_ids;
             $customer_id = $customer -> customer_id;
@@ -205,7 +205,7 @@ $code_thing -> process_data();
             $this -> customer_ids = $customer_ids;
         }
        
-        public function get_customers_as_list_by_id()
+        function get_customers_as_list_by_id()
         {
             return $this -> customer_ids;
         }
