@@ -1,3 +1,4 @@
+
 package bank;
 
 import java.util.ArrayList;
@@ -5,8 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -174,25 +173,25 @@ class Customer {
 
     private HashMap<Integer, Account> accounts_obj = new HashMap<>();
     private HashMap<Integer, Integer> account_ids = new HashMap<>();
-    public Integer customer_id = null;
+    Integer customer_id = null;
 
-    public Customer(Integer customer_id) {
+    Customer(Integer customer_id) {
         this.customer_id = customer_id;
     }
 
-    public void add_account(Account account_obj) {
+    void add_account(Account account_obj) {
         Integer account_id = account_obj.account_id;
         this.accounts_obj.put(account_id, account_obj);        
         this.account_ids.put(account_id, account_id);
     }
     
-    public ArrayList<Integer> get_accounts_as_list_by_id() {
+    ArrayList<Integer> get_accounts_as_list_by_id() {
         ArrayList<Integer> ids = new ArrayList<>(this.account_ids.values());
         return ids;
     }
 
     
-    public HashMap<Integer,Integer> get_accounts_as_map_by_id() {
+    HashMap<Integer,Integer> get_accounts_as_map_by_id() {
         return this.account_ids;
     }
     
@@ -201,22 +200,22 @@ class Customer {
 class Account {
 
     private HashMap<Integer, Integer> customer_ids = new HashMap<>();
-    public Integer account_id = null;
+    Integer account_id = null;
 
-    public Account(Integer account_id) {
+    Account(Integer account_id) {
         this.account_id = account_id;
     }
 
-    public void add_customer(Customer customer) {
+    void add_customer(Customer customer) {
         Integer customer_id = customer.customer_id;
         this.customer_ids.put(customer_id, customer_id);
     }
 
-    public HashMap<Integer, Integer> get_customers_as_map_by_id() {
+    HashMap<Integer, Integer> get_customers_as_map_by_id() {
         return this.customer_ids;
     }   
     
-    public ArrayList<Integer> get_customers_as_list_by_id() {
+    ArrayList<Integer> get_customers_as_list_by_id() {
         ArrayList<Integer> ids = new ArrayList<>(this.customer_ids.values());
         return ids;
     }
