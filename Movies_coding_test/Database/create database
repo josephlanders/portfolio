@@ -1,0 +1,2 @@
+create database webmovies;
+use webmovies;
