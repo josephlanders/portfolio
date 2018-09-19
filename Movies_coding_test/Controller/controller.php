@@ -29,6 +29,7 @@ class controller {
             $postback = $model->process_postback($keep);
             $provider_name = $postback["provider"];
             $id = $postback["id"];
+            
             list($movie, $error_messages) = $model->get_movie_with_details_attached($provider_name, $id);
             $alternate_movies = array();
             
