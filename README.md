@@ -1,6 +1,10 @@
 # portfolio
 Bank coding test - Java, PHP, GoLang, JavaScript, Kotlin
 <br/><br/>
+Robot coding test - Java + Tests + Comments! :P
+<br/><br/>
+Movie coding test - PHP - Tests - Comments :( :P
+<br/><br/>
 Web development technologies is coded in C# - a first year project.
 <br/><br/>
 Algorithms and Analysis and Database Systems are in C - a second year project.
