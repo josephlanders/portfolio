@@ -1,0 +1,18 @@
+### Examples from specification ###
+### Example a
+PLACE 0,0,NORTH
+MOVE
+REPORT
+
+### Example b
+PLACE 0,0,NORTH
+LEFT
+REPORT
+
+### Example c
+PLACE 1,2,EAST
+MOVE
+MOVE
+LEFT
+MOVE
+REPORT
