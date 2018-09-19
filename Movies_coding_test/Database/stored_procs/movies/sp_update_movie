@@ -2,9 +2,9 @@ delimiter //
 
 DROP PROCEDURE IF EXISTS sp_update_movie//
 CREATE PROCEDURE sp_update_movie (
-   IN in_movieid INTEGER (32) UNSIGNED,
    IN in_Provider VARCHAR(256) CHARACTER SET UTF8,
    IN in_ID VARCHAR(256) CHARACTER SET UTF8,
+   IN in_hasDetails BOOLEAN,
    IN in_Title VARCHAR(256) CHARACTER SET UTF8,
    IN in_Year VARCHAR(256) CHARACTER SET UTF8,
    IN in_Rated VARCHAR(256) CHARACTER SET UTF8,
@@ -13,7 +13,7 @@ CREATE PROCEDURE sp_update_movie (
    IN in_Director VARCHAR(256) CHARACTER SET UTF8,
    IN in_Writer VARCHAR(256) CHARACTER SET UTF8,
    IN in_Actors VARCHAR(256) CHARACTER SET UTF8,
-   IN in_Plot VARCHAR(256) CHARACTER SET UTF8,
+   IN in_Plot VARCHAR(2048) CHARACTER SET UTF8,
    IN in_Language VARCHAR(256) CHARACTER SET UTF8,
    IN in_Country VARCHAR(256) CHARACTER SET UTF8,
    IN in_Awards VARCHAR(256) CHARACTER SET UTF8,
@@ -30,6 +30,7 @@ UPDATE movies SET
    datemodified=utc_timestamp(),
    Provider=in_Provider,
    ID=in_ID,
+   hasDetails=in_hasDetails,
    Title=in_Title,
    Year=in_Year,
    Rated=in_Rated,
@@ -48,7 +49,7 @@ Rating = in_Rating,
 Votes = in_Votes,
 Type = in_Type,
 Price = in_Price
-   WHERE movieid=in_movieid;
+   WHERE provider=in_Provider AND ID=in_ID;
 COMMIT;
 END;
 //

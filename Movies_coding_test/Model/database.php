@@ -1,7 +1,6 @@
 <?php
 
 namespace moviesite;
-
 ?>
 
 <?php
@@ -16,15 +15,15 @@ class database {
     private $password = "";
     private $database_name = "";
     private $persistent = true;
-   
-    public function __construct() {               
+
+    public function __construct() {
         $this->hostname = "localhost";
         //$this->username = "webmovies";
         //$this->password = "moviesweb";
         // Don't do this on a production system.
         $this->username = "root";
         $this->password = "Crusades";
-        
+
         $this->database_name = "webmovies";
     }
 
@@ -51,30 +50,30 @@ class database {
             $connected = false;
 
             $server_hostname = "localhost";
-                    
-                if ($this->persistent == true) {
-                    $server_connect_hostname = "p:" . $server_hostname;
-                } else {
-                    $server_connect_hostname = $server_hostname;
-                }
-                
-                $mysqli = new \mysqli($server_connect_hostname, $this->username, $this->password, $this->database_name);
 
-                #PHP 5.3+
-                #
+            if ($this->persistent == true) {
+                $server_connect_hostname = "p:" . $server_hostname;
+            } else {
+                $server_connect_hostname = $server_hostname;
+            }
+
+            $mysqli = new \mysqli($server_connect_hostname, $this->username, $this->password, $this->database_name);
+
+            #PHP 5.3+
+            #
                 ## connect error is unsafe - if first server errors, second server also breaks!
-                $connect_error = $mysqli->connect_error;
-                $sqlstate = $mysqli->sqlstate;
+            $connect_error = $mysqli->connect_error;
+            $sqlstate = $mysqli->sqlstate;
 
-                if ($sqlstate !== "00000") {
-                    $error_messages[] = 'Connect Error ' . $server_hostname . ' (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error;
+            if ($sqlstate !== "00000") {
+                $error_messages[] = 'Connect Error ' . $server_hostname . ' (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error;
 
-                    $mysqli = null;
-                } else {
-                    $connected = true;
-                }
+                $mysqli = null;
+            } else {
+                $connected = true;
+            }
 
-            
+
             if ($connected == false) {
                 $error_messages[] = "Connect failed - Unable to connect to any of the database servers" . "<br/>";
                 $GLOBALS["cache_query"] = false;
@@ -94,7 +93,7 @@ class database {
 
         return $connected;
     }
-    
+
     private function disconnect() {
         /* close any non-persistent connections 
          * Does nothing on persistent connections
@@ -190,13 +189,12 @@ class database {
         return $row;
     }
 
-        public function make_safe($string) {
+    public function make_safe($string) {
         $string = $this->mysqli->real_escape_string($string);
         $string = "'" . $string . "'";
 
         return $string;
     }
-
 
     public function &add_movie($movie) {
 #TODO: Make safe
@@ -205,53 +203,52 @@ class database {
         $Provider = $movie->get_provider();
         $ID = $movie->get_ID();
         $hasDetails = false;
-   $Title = $movie -> get_title();
-   $Year = $movie -> get_year();
-   $Rated = $movie -> Rated;
-   $Released = $movie -> Released;
-   $Genre = $movie -> Genre;
-   $Director = $movie -> Director;
-   $Writer = $movie -> Writer;
-   $Actors = $movie -> Actors;
-   $Plot = $movie -> Plot;
-   $Language = $movie -> Language;
-   $Country = $movie -> Country;
-   $Awards = $movie -> Awards;
-   $Poster = $movie -> Poster;
-   $Metascore = $movie -> Metascore;
-   $Rating = $movie -> Rating;
-   $Votes = $movie -> Votes;
-   $Type = $movie -> Type;
-   $Price = $movie -> get_price();
-   
-$Provider = $this -> make_safe($Provider);
-   $ID = $this -> make_safe($ID);
-   if($hasDetails == true)
-   {
-       $hasDetails = "true";
-   } else {
-       $hasDetails = "false";
-   }
-   //$hasDetails = $this -> make_safe($hasDetails);
-   $Title = $this -> make_safe($Title);
-   $Year = $this -> make_safe($Year);
-   $Rated = $this -> make_safe($Rated);
-   $Released = $this -> make_safe($Released);
-   $Genre = $this -> make_safe($Genre);
-   $Director= $this -> make_safe($Director);
-   $Writer= $this -> make_safe($Writer);
-   $Actors= $this -> make_safe($Actors);
-   $Plot= $this -> make_safe($Plot);
-   $Language= $this -> make_safe($Language);
-   $Country= $this -> make_safe($Country);
-   $Awards= $this -> make_safe($Awards);
-   $Poster= $this -> make_safe($Poster);
-   $Metascore= $this -> make_safe($Metascore);
-   $Rating= $this -> make_safe($Rating);
-   $Votes= $this -> make_safe($Votes);
-   $Type= $this -> make_safe($Type);
-   $Price= $this -> make_safe($Price);
-       
+        $Title = $movie->get_title();
+        $Year = $movie->get_year();
+        $Rated = $movie->Rated;
+        $Released = $movie->Released;
+        $Genre = $movie->Genre;
+        $Director = $movie->Director;
+        $Writer = $movie->Writer;
+        $Actors = $movie->Actors;
+        $Plot = $movie->Plot;
+        $Language = $movie->Language;
+        $Country = $movie->Country;
+        $Awards = $movie->Awards;
+        $Poster = $movie->Poster;
+        $Metascore = $movie->Metascore;
+        $Rating = $movie->Rating;
+        $Votes = $movie->Votes;
+        $Type = $movie->Type;
+        $Price = $movie->get_price();
+
+        $Provider = $this->make_safe($Provider);
+        $ID = $this->make_safe($ID);
+        if ($hasDetails == true) {
+            $hasDetails = "true";
+        } else {
+            $hasDetails = "false";
+        }
+        //$hasDetails = $this -> make_safe($hasDetails);
+        $Title = $this->make_safe($Title);
+        $Year = $this->make_safe($Year);
+        $Rated = $this->make_safe($Rated);
+        $Released = $this->make_safe($Released);
+        $Genre = $this->make_safe($Genre);
+        $Director = $this->make_safe($Director);
+        $Writer = $this->make_safe($Writer);
+        $Actors = $this->make_safe($Actors);
+        $Plot = $this->make_safe($Plot);
+        $Language = $this->make_safe($Language);
+        $Country = $this->make_safe($Country);
+        $Awards = $this->make_safe($Awards);
+        $Poster = $this->make_safe($Poster);
+        $Metascore = $this->make_safe($Metascore);
+        $Rating = $this->make_safe($Rating);
+        $Votes = $this->make_safe($Votes);
+        $Type = $this->make_safe($Type);
+        $Price = $this->make_safe($Price);
+
 
 
         $query = "CALL sp_create_movie(
@@ -307,27 +304,28 @@ $Provider = $this -> make_safe($Provider);
             foreach ($movies_as_array as $movie_as_array) {
                 $movie = new movie($movie_as_array);
                 $movie_id = $movie->get_ID();
-                $movies[$movie_id] = $movie;
+                $provider_name = $movie->get_provider();
+                $movies[$provider_name][$movie_id] = $movie;
             }
         }
 
 
 
         return $movies;
-    }   
-    
-    function &get_all_movies_by_provider_keyed_by_name_and_year($provider_name) {
+    }
+
+    function &get_all_movies_by_provider_keyed_by_id($provider_name) {
         $movies = array();
-        
-        
+
+
 
         $this->connect();
-        
-        $provider_name = $this -> make_safe($provider_name);
+
+        $provider_name = $this->make_safe($provider_name);
 
         $query = "CALL sp_get_all_movies_by_provider( $provider_name )";
-        
-        
+
+
         /* Select queries return a resultset */
         /* Get the data into an array so that we can close the mysql connection */
         $movies_as_array = $this->execute_query_array($query);
@@ -339,7 +337,40 @@ $Provider = $this -> make_safe($Provider);
         if ($movies_as_array != null) {
             foreach ($movies_as_array as $movie_as_array) {
                 $movie = new movie($movie_as_array);
-                $movie_display_name = $movie -> get_display_name();
+                $id = $movie->get_ID();
+                $movies[$id] = $movie;
+            }
+        }
+
+
+
+        return $movies;
+    }
+
+    function &get_all_movies_by_provider_keyed_by_name_and_year($provider_name) {
+        $movies = array();
+
+
+
+        $this->connect();
+
+        $provider_name = $this->make_safe($provider_name);
+
+        $query = "CALL sp_get_all_movies_by_provider( $provider_name )";
+
+
+        /* Select queries return a resultset */
+        /* Get the data into an array so that we can close the mysql connection */
+        $movies_as_array = $this->execute_query_array($query);
+
+        $this->disconnect();
+
+
+        $movies = array();
+        if ($movies_as_array != null) {
+            foreach ($movies_as_array as $movie_as_array) {
+                $movie = new movie($movie_as_array);
+                $movie_display_name = $movie->get_display_name();
                 $movies[$movie_display_name] = $movie;
             }
         }
@@ -347,21 +378,86 @@ $Provider = $this -> make_safe($Provider);
 
 
         return $movies;
-    }   
+    }
 
+    public function &update_movie($movie) {
+        $Provider = $movie->get_provider();
+        $ID = $movie->get_ID();
+        $hasDetails = $movie -> hasDetails;
+        $Title = $movie->get_title();
+        $Year = $movie->get_year();
+        $Rated = $movie->Rated;
+        $Released = $movie->Released;
+        $Genre = $movie->Genre;
+        $Director = $movie->Director;
+        $Writer = $movie->Writer;
+        $Actors = $movie->Actors;
+        $Plot = $movie->Plot;
+        $Language = $movie->Language;
+        $Country = $movie->Country;
+        $Awards = $movie->Awards;
+        $Poster = $movie->Poster;
+        $Metascore = $movie->Metascore;
+        $Rating = $movie->Rating;
+        $Votes = $movie->Votes;
+        $Type = $movie->Type;
+        $Price = $movie->get_price();
 
-    public function &update_movie($countryid, $sortid, $name, $code) {
-        $countryid = (int) $countryid;
-        $sortid = (int) $sortid;
         $this->connect();
 
-        #$quotedcountryid = $this -> make_safe($countryid);
-        #$quotedsortid = $this->make_safe($sortid);
-        $quotedname = $this->make_safe($name);
-        $quotedcode = $this->make_safe($code);
 
-        $query = "CALL sp_update_country($countryid, $sortid, $quotedname, $quotedcode )";
-        #echo $query;
+        $Provider = $this->make_safe($Provider);
+        $ID = $this->make_safe($ID);
+        if ($hasDetails == true) {
+            $hasDetails = "true";
+        } else {
+            $hasDetails = "false";
+        }
+        //$hasDetails = $this -> make_safe($hasDetails);
+        $Title = $this->make_safe($Title);
+        $Year = $this->make_safe($Year);
+        $Rated = $this->make_safe($Rated);
+        $Released = $this->make_safe($Released);
+        $Genre = $this->make_safe($Genre);
+        $Director = $this->make_safe($Director);
+        $Writer = $this->make_safe($Writer);
+        $Actors = $this->make_safe($Actors);
+        $Plot = $this->make_safe($Plot);
+        $Language = $this->make_safe($Language);
+        $Country = $this->make_safe($Country);
+        $Awards = $this->make_safe($Awards);
+        $Poster = $this->make_safe($Poster);
+        $Metascore = $this->make_safe($Metascore);
+        $Rating = $this->make_safe($Rating);
+        $Votes = $this->make_safe($Votes);
+        $Type = $this->make_safe($Type);
+        $Price = $this->make_safe($Price);
+
+        $movieid = 0;
+
+        $query = "CALL sp_update_movie(
+$Provider,
+   $ID,
+   $hasDetails,
+   $Title,
+   $Year,
+   $Rated,
+   $Released,
+   $Genre,
+   $Director,
+   $Writer,
+   $Actors,
+   $Plot,
+   $Language,
+   $Country,
+   $Awards,
+   $Poster,
+   $Metascore,
+   $Rating,
+   $Votes,
+   $Type,
+   $Price)";
+        echo $query;
         #die();
 
         /* Select queries return a resultset */
@@ -371,6 +467,7 @@ $Provider = $this -> make_safe($Provider);
         $this->disconnect();
 
         return $countryid_in_array;
-    }       
+    }
+
 }
 ?>

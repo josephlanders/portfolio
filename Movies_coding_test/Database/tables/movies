@@ -9,7 +9,7 @@ CREATE TABLE movies (movieid INTEGER (32) UNSIGNED PRIMARY KEY AUTO_INCREMENT NO
                     Director VARCHAR(256) CHARACTER SET UTF8,
                     Writer VARCHAR(256) CHARACTER SET UTF8,
                     Actors VARCHAR(256) CHARACTER SET UTF8,
-                    Plot VARCHAR(256) CHARACTER SET UTF8,
+                    Plot VARCHAR(2048) CHARACTER SET UTF8,
                     Language VARCHAR(256) CHARACTER SET UTF8,
                     Country VARCHAR(256) CHARACTER SET UTF8,
                     Awards VARCHAR(256) CHARACTER SET UTF8,

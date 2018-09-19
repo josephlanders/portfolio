@@ -1,10 +1,10 @@
 delimiter //
 
-DROP PROCEDURE IF EXISTS sp_create_movie//
-CREATE PROCEDURE sp_create_movie (
+DROP PROCEDURE IF EXISTS sp_update_movie//
+CREATE PROCEDURE sp_update_movie (
+   IN in_movieid INTEGER (32) UNSIGNED,
    IN in_Provider VARCHAR(256) CHARACTER SET UTF8,
    IN in_ID VARCHAR(256) CHARACTER SET UTF8,
-   IN in_hasDetails BOOLEAN,
    IN in_Title VARCHAR(256) CHARACTER SET UTF8,
    IN in_Year VARCHAR(256) CHARACTER SET UTF8,
    IN in_Rated VARCHAR(256) CHARACTER SET UTF8,
@@ -13,7 +13,7 @@ CREATE PROCEDURE sp_create_movie (
    IN in_Director VARCHAR(256) CHARACTER SET UTF8,
    IN in_Writer VARCHAR(256) CHARACTER SET UTF8,
    IN in_Actors VARCHAR(256) CHARACTER SET UTF8,
-   IN in_Plot VARCHAR(2048) CHARACTER SET UTF8,
+   IN in_Plot VARCHAR(256) CHARACTER SET UTF8,
    IN in_Language VARCHAR(256) CHARACTER SET UTF8,
    IN in_Country VARCHAR(256) CHARACTER SET UTF8,
    IN in_Awards VARCHAR(256) CHARACTER SET UTF8,
@@ -23,60 +23,33 @@ CREATE PROCEDURE sp_create_movie (
    IN in_Votes VARCHAR(256) CHARACTER SET UTF8,
    IN in_Type VARCHAR(256) CHARACTER SET UTF8,
    IN in_Price VARCHAR(256) CHARACTER SET UTF8
+
 )
 BEGIN
-
-INSERT INTO movies (
-   Provider,
-   ID,
-   hasDetails,
-   Title,
-   Year,
-   Rated,
-   Released,
-   Genre,
-   Director,
-   Writer,
-   Actors,
-   Plot,
-   Language,
-   Country,
-   Awards,
-   Poster,
-   Metascore,
-   Rating,
-   Votes,
-   Type,
-   Price
-   )
-   VALUES (
-   in_Provider,
-   in_ID,
-   in_hasDetails,
-   in_Title,
-   in_Year,
-   in_Rated,
-   in_Released,
-   in_Genre,
-   in_Director,
-   in_Writer,
-   in_Actors,
-   in_Plot,
-   in_Language,
-   in_Country,
-   in_Awards,
-   in_Poster,
-   in_Metascore,
-   in_Rating,
-   in_Votes,
-   in_Type,
-   in_Price   
-);
-
-
-
+UPDATE movies SET 
+   datemodified=utc_timestamp(),
+   Provider=in_Provider,
+   ID=in_ID,
+   Title=in_Title,
+   Year=in_Year,
+   Rated=in_Rated,
+   Released=in_Released,
+   Genre=in_Genre,
+   Director=in_Director,
+   Writer=in_Writer,   
+   Actors = in_Actors,
+   Plot = in_Plot,
+   Language = in_Language,
+Country = in_Country,
+Awards = in_Awards,
+Poster = in_Poster,
+Metascore = in_Metascore,
+Rating = in_Rating,
+Votes = in_Votes,
+Type = in_Type,
+Price = in_Price
+   WHERE movieid=in_movieid;
 COMMIT;
-SELECT last_insert_id() AS out_movieid;
 END;
 //
 delimiter ;

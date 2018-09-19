@@ -21,7 +21,7 @@ class model {
     private $memcache_expiry = 15;
     private $movies = array();
     private $getpost_array = array();
-    private $use_exponential_backoff = false;
+    private $use_exponential_backoff = true;
     
     // Set to 1
     private $num_retry_attempts = 2;
@@ -77,13 +77,13 @@ class model {
         foreach ($this->movie_providers as $provider_name => $provider) {
             //var_dump($provider_name);
             //var_dump($provider);
-            $movies[$provider_name] = $this->get_movies_list_by_provider_keyed_by_name_and_year_memcache($provider_name);
+            $movies[$provider_name] = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
         }
 
         foreach ($movies as $provider_name => $provider_movies) {
             foreach ($provider_movies as $name_and_year => $movie) {
                 $id = $movie->ID;
-                list($movie, $error_messages) = $this->get_movie_details_by_provider_and_id_memcache($provider_name, $id);
+                list($movie, $error_messages) = $this->memcache_get_movie_details_by_provider_and_id($provider_name, $id);
                 //$movie->set_details($movie_details);
                 $movies[$provider_name][$name_and_year] = $movie;
             }
@@ -100,7 +100,7 @@ class model {
         $movies = $this->movies;
         $error_messages = array();
         foreach ($this->movie_providers as $provider_name => $provider) {
-            list($movies[$provider_name], $new_error_messages) = $this->get_movies_list_by_provider_keyed_by_name_and_year_memcache($provider_name);
+            list($movies[$provider_name], $new_error_messages) = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
             $error_messages = array_merge($error_messages, $new_error_messages);
         }
 
@@ -135,11 +135,11 @@ class model {
         $movies = $this->movies;
         foreach ($this->movie_providers as $provider_name => $provider) {
 
-            $movies[$provider->name] = $this->get_movies_list_by_provider_keyed_by_name_and_year_memcache($provider);
+            $movies[$provider->name] = $this->database_get_movies_list_by_provider_keyed_by_name_and_year($provider);
 
             foreach ($movies[$provider->name] as $key => $movie) {
                 $id = $movie->ID;
-                list($movie_with_details, $error_messages) = $this->get_movie_details_by_provider_and_id_memcache($provider, $id);
+                list($movie_with_details, $error_messages) = $this->database_get_movie_details_by_provider_and_id($provider, $id);
 
                 //$movie->set_details($movie_details);
 
@@ -167,7 +167,7 @@ class model {
         return $all_movies;
     }
 
-    public function get_movies_list_by_provider_keyed_by_name_and_year_memcache($provider_name) {
+    public function memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name) {
         $found = false;
         $error_messages = array();
         $searchkeyvalues = array("provider" => $provider_name, "movies" => "movies",
@@ -189,7 +189,7 @@ class model {
             if ($this->verbose == true) {
                 echo "\nNothing found for movies list in memcached ";
             }
-            list($movies_keyed_by_name_and_year, $error_messages) = $this->get_movies_list_by_provider_keyed_by_name_and_year_database($provider_name);
+            list($movies_keyed_by_name_and_year, $error_messages) = $this->database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
 
             if ($movies_keyed_by_name_and_year != array()) {
                 if ($this->verbose == true) {
@@ -202,7 +202,7 @@ class model {
         return array($movies_keyed_by_name_and_year, $error_messages);
     }
     
-    public function get_movies_list_by_provider_keyed_by_name_and_year_database($provider_name)
+    public function database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name)
     {
         $error_messages = array();
        
@@ -210,7 +210,7 @@ class model {
         
         if ($movies_keyed_by_name_and_year == array())
         {
-            list($movies_keyed_by_name_and_year, $error_messages) = $this->get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
+            list($movies_keyed_by_name_and_year, $error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
             
             // Write to database
             foreach ($movies_keyed_by_name_and_year as $name_and_year => $movie)
@@ -222,7 +222,7 @@ class model {
         return array($movies_keyed_by_name_and_year, $error_messages);
     }
 
-    public function get_movies_list_by_provider_keyed_by_id_memcache($provider_name) {
+    public function memcache_get_movies_list_by_provider_keyed_by_id($provider_name) {
         $found = false;
         $error_messages = array();
         $searchkeyvalues = array("provider" => $provider_name, "movies" => "movies",
@@ -245,7 +245,7 @@ class model {
             if ($this->verbose == true) {
                 echo "\nNothing found for movies list in memcached ";
             }
-            list($movies_keyed_by_id, $new_error_messages) = $this->get_movies_list_by_provider_keyed_by_id_retry($provider_name);
+            list($movies_keyed_by_id, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
             
             $error_messages = array_merge($error_messages, $new_error_messages);
 
@@ -260,7 +260,7 @@ class model {
         return array($movies_keyed_by_id, $error_messages);
     }
 
-    public function get_movie_details_by_provider_and_id_memcache($provider_name, $id) {
+    public function memcache_get_movie_details_by_provider_and_id($provider_name, $id) {
         $found = false;
         $movie = null;
         $error_messages = array();
@@ -282,7 +282,7 @@ class model {
             if ($this->verbose == true) {
                 echo "\nNothing found for movie details in memcached ";
             }
-            list($movie, $error_messages) = $this->get_movie_details_by_provider_retry($provider_name, $id);
+            list($movie, $error_messages) = $this->database_get_movie_details_by_provider_and_id($provider_name, $id);
 
             if ($movie != null) {
                 if ($this->verbose == true) {
@@ -295,7 +295,7 @@ class model {
         return array($movie, $error_messages);
     }
 
-    public function get_movie_details_by_provider_retry($provider_name, $id) {
+    public function curl_get_movie_details_by_provider_and_id_retry($provider_name, $id) {
         $movie = null;
         $error_messages = array();
 
@@ -312,12 +312,13 @@ class model {
                 echo "\nTrying provider " . $provider_name;
             }
             try {
-                list($movie_details, $new_error_messages) = $this->get_movie_details_by_provider($provider_name, $id);
+                list($movie_details, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id($provider_name, $id);
                 $error_messages = array_merge($error_messages, $new_error_messages);
                 
                 $movie_details["Provider"] = $provider_name;
                 
                 $movie = new \moviesite\movie($movie_details);
+                $movie -> hasDetails = true;
                 //$movie -> set_details($movie_details);
                 $success = true;
                 break;
@@ -344,7 +345,7 @@ class model {
         return array($movie, $error_messages);
     }
 
-    public function get_movies_list_by_provider_keyed_by_id($provider_name) {
+    public function curl_get_movies_list_by_provider_keyed_by_id($provider_name) {
         $movies_keyed_by_id = array();
         $error_messages = array();
 
@@ -395,7 +396,7 @@ class model {
         return array($movies_keyed_by_id, $error_messages);
     }
 
-    public function get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name) {
+    public function curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name) {
         $movies_keyed_by_name_and_year = array();
         $error_messages = array();
 
@@ -412,7 +413,7 @@ class model {
                 echo "\nTrying provider " . $provider_name;
             }
             try {
-                list($movies_as_raw_array, $new_error_messages) = $this->get_movies_list_by_provider($provider_name);
+                list($movies_as_raw_array, $new_error_messages) = $this->curl_get_movies_list_by_provider($provider_name);
                 
                 $error_messages = array_merge($error_messages, $new_error_messages);
 
@@ -451,7 +452,7 @@ class model {
         return array($movies_keyed_by_name_and_year, $error_messages);
     }
 
-    public function get_movies_list_by_provider_keyed_by_id_retry($provider_name) {
+    public function curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name) {
         $movies_keyed_by_id = array();
         $error_messages = array();
 
@@ -468,7 +469,7 @@ class model {
                 echo "\nTrying provider " . $provider_name;
             }
             try {
-                list($movies_as_raw_array, $new_error_messages) = $this->get_movies_list_by_provider($provider_name);
+                list($movies_as_raw_array, $new_error_messages) = $this->curl_get_movies_list_by_provider($provider_name);
                 
                 $error_messages = array_merge($error_messages, $new_error_messages);
 
@@ -508,26 +509,72 @@ class model {
 
         $error_messages = array();
         
-        list($movie, $error_messages) = $this->get_movie_by_provider_and_id($provider_name, $id);
+        //list($movie, $error_messages) = $this->get_movie_by_provider_and_id($provider_name, $id);
 
-        if ($movie != null) {
+        //if ($movie != null) {
 
-            list($movie_details, $new_error_messages) = $this->get_movie_details_by_provider_and_id_memcache($provider_name, $id);
+            list($movie, $new_error_messages) = $this->database_get_movie_details_by_provider_and_id($provider_name, $id);
             
             $error_messages = array_merge($error_messages, $new_error_messages);
 
-            if ($movie_details != null) {
-                //$movie->set_details($movie_details);
-                $movie = $movie_details;
-            }
-        }
+        //}
 
         return array($movie, $error_messages);
     }
+        
+    function database_get_movie_details_by_provider_and_id($provider_name, $id)
+    {
+        $found = false;
+        $hasdetails = false;
+        $error_messages = array();
+        
+        $movies = $this -> database ->get_all_movies_by_provider_keyed_by_id($provider_name);       
+        
+        if ($movies == array())
+        {
+            return;
+        }
+        
+        if (isset($movies[$id]))
+        {
+            $found = true;
+            $movie = $movies[$id];
+            $hasdetails = $movie -> hasDetails;            
+        }
+       
+        if ($found == false)
+        {
+            echo "Movie not found on database";
+            list($movie, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+            
+            $error_messages = array_merge($error_messages, $new_error_messages);
+            // Add 
+            if ($movie != null)
+            {
+                $this -> database -> add_movie($movie);
+            } 
+        } else {
+            
+            if ($hasdetails == false)
+            {
+                echo "Movie in movie list but has no details";;
+                list($movie, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+                
+                $error_messages = array_merge($error_messages, $new_error_messages);
+                
+                if ($movie != null)
+                {
+                    $this -> database -> update_movie($movie);
+                }
+            }
+        }
+        return array($movie, $error_messages);
+    }
+
 
     public function get_movie_by_provider_and_id($provider_name, $id) {
         $movie = null;
-        list($movies, $error_messages) = $this->get_movies_list_by_provider_keyed_by_id_memcache($provider_name);
+        list($movies, $error_messages) = $this->memcache_get_movies_list_by_provider_keyed_by_id($provider_name);
 
         if (isset($movies[$id])) {
             $movie = $movies[$id];
@@ -563,7 +610,7 @@ class model {
             $movie = $all_movies[$searchkey];
 
             foreach ($movie as $provider_name => $provider_movie) {
-                list($new_movie, $new_error_messages) = $this->get_movie_details_by_provider_and_id_memcache($provider_name, $id);
+                list($new_movie, $new_error_messages) = $this->memcache_get_movie_details_by_provider_and_id($provider_name, $id);
                 
                 $error_messages = array_merge($error_messages, $new_error_messages);
                 //$movie->set_details($movie_details);
@@ -589,7 +636,7 @@ class model {
         return $merged;
     }
 
-    public function get_movies_list_by_provider($provider_name) {
+    public function curl_get_movies_list_by_provider($provider_name) {
 
         $provider = $this->get_provider($provider_name);
 
@@ -638,7 +685,7 @@ class model {
         return array($response_array, $error_messages);
     }
 
-    public function get_movie_details_by_provider($provider_name, $id) {
+    public function curl_get_movie_details_by_provider_and_id($provider_name, $id) {
 
         $provider = $this->get_provider($provider_name);
 

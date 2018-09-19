@@ -37,8 +37,9 @@ class movie_detail {
             <div style ="float:left;clear:left;margin-top:20px;">
                 <div style="float:left;">
                     <div style="float:left;width:200px;"><h2 style="font-size: 15px;">Provider: <?php echo $provider_name; ?></h2></div> 
-                    <div style="float:left;clear:left;width:200px;"><h2 style="font-size: 15px;">"<?php echo $movie->get_display_name(); ?>"</h2></div>
-                    <div style="float:left;clear:left;width:200px;"><h2 style="font-size: 15px;">$<?php echo $movie->get_price(); ?></h2></div>
+                    <div style="float:left;clear:left;width:200px;"><h2 style="font-size: 15px;"><?php echo $movie->get_display_name(); ?></h2></div>
+                    <div style="float:left;clear:left;width:200px;"><h2 style="font-size: 15px;"><?php echo $movie->get_display_price(); ?></h2></div>
+                    <div style="float:left;clear:left;width:200px;"><p style="font-size: 15px;"><?php echo $movie->Plot; ?></p></div>
                 </div>
                 <img style="float:left;height:450px;width:300px;margin-left:20px;border:grey 1px solid" alt="<?php echo $movie->get_display_name(); ?>" style="float:left;width:150px;height:225px;" src="<?php echo $movie->get_poster(); ?>" />                        
             </div>
@@ -56,7 +57,7 @@ class movie_detail {
                             <div style="float:left;width:150px;height:125px;">                                
                                 <h5><?php echo $provider_name; ?></h5>
                                 <h5><?php echo $movie_by_provider -> get_display_name(); ?></h5>
-                                <h5><?php echo $movie_by_provider -> get_price(); ?></h5>
+                                <h5><?php echo $movie_by_provider -> get_display_price(); ?></h5>
                                 
                             </div>
                         </div>

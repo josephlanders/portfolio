@@ -10,7 +10,7 @@ namespace moviesite;
 class movie {
    private $Provider = "";
    private $ID = "";
-   private $hasDetails = false;
+   public $hasDetails = false;
    private $Title = "";
    private $Year = "";
    public $Rated = "";
@@ -63,6 +63,17 @@ class movie {
         $price = $this -> Price;
         return $price;
     }
+        
+    function get_display_price()
+    {
+        $price = null;
+        if ($this -> Price != null)
+        {
+            $price = "$" . $this -> Price;
+        }
+        return $price;
+    }
+    
     
     function get_title()
     {
