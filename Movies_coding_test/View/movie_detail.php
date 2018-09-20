@@ -66,6 +66,8 @@ class movie_detail {
                 }
                 ?>
             </div>
+            <div style="float:left;clear:both;margin-top:20px;">Movie details retrieved from provider at: <?php echo $movie -> datemodified; ?></div>
+            <div style="float:left;clear:both;">Data retrieval time: <?php echo $data["controller_time"]; ?></div>
         </div>
         <?php
     }

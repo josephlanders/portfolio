@@ -51,7 +51,8 @@ class view {
         }
         
         ?>
-    </body>
+        
+    </body>    
 </html>
     <?php
         

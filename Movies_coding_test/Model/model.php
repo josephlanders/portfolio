@@ -18,7 +18,7 @@ class model {
     private $response_array = "";
     private $movie_providers = array();
     private $memcache_store = null;
-    private $memcache_expiry = 60;
+    private $memcache_expiry = 15;
     private $movies = array();
     private $getpost_array = array();
     private $use_exponential_backoff = true;
@@ -26,6 +26,8 @@ class model {
     private $num_retry_attempts = 3;
     private $verbose = false;
     private $database = null;
+    private $use_memcache = true;
+    private $use_database = true;
 
     function __construct() {
 
@@ -68,20 +70,135 @@ class model {
       return $movie_details;
       } */
 
+    public function cache_logic_get_movies_list_by_provider_keyed_by_name_and_year($provider_name) {
+        $movies_keyed_by_name_and_year = array();
+        $error_messages = array();
+        $retrieved_from_memcache = false;
+        $retrieved_from_database = false;
+        $retrieved_from_curl = false;
+        $updated_memcache = false;
+        $updated_database = false;
+
+        if ($this->use_memcache == true) {
+            list($movies_keyed_by_name_and_year, $retrieved_from_memcache, $new_error_messages) = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+        }
+
+        if ($retrieved_from_memcache == false) {
+            if ($this->use_database == true) {
+                list($movies_keyed_by_name_and_year, $retrieved_from_database, $new_error_messages) = $this->database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+            }
+
+            if ($retrieved_from_database == false) {
+                list($movies_keyed_by_name_and_year, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
+            }
+        }
+
+
+        if (($this->use_memcache == true && $retrieved_from_memcache == false) && ($retrieved_from_database == true || $retrieved_from_curl == true)) {
+            $this->memcache_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
+            $updated_memcache = true;
+        }
+
+        if (($retrieved_from_memcache == false && ($this->use_database == true && $retrieved_from_database == false)) && $retrieved_from_curl == true) {
+            $this->database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
+            $updated_database = true;
+        }
+        $error_messages = array_merge($error_messages, $new_error_messages);
+
+        if ($this->verbose == true) {
+            echo "<br/>Movies list: " . $provider_name;
+            echo "<br/>Retrieved from memcache: " . $retrieved_from_memcache;
+            echo "<br/>Retrieved from database: " . $retrieved_from_database;
+            echo "<br/>Retrieved from curl: " . $retrieved_from_curl;
+
+            echo "<br/>Updated memcache: " . $updated_memcache;
+            echo "<br/>Updated database: " . $updated_database;
+        }
+
+
+
+        return array($movies_keyed_by_name_and_year, $error_messages);
+    }
+    
+    public function cache_logic_get_movie_details_by_provider_and_id($provider_name, $id) {
+        $movie = null;
+        $error_messages = array();
+        $retrieved_from_memcache = false;
+        $retrieved_from_database = false;
+        $retrieved_from_curl = false;
+        $updated_memcache = false;
+        $updated_database = false;
+
+        if ($this->use_memcache == true) {
+            list($movie, $retrieved_from_memcache, $new_error_messages) = $this->memcache_get_movie_details_by_provider_and_id($provider_name, $id);
+        }
+
+        //if (($retrieved_from_memcache == false) || ($retrieved_from_memcache == true && $movie -> hasDetails == false)) {
+        if ($retrieved_from_memcache == false) {
+            if ($this->use_database == true) {
+                list($movie, $retrieved_from_database, $new_error_messages) = $this->database_get_movie_details_by_provider_and_id($provider_name, $id);                
+            }
+            
+            //var_dump($movie);
+
+            if (($retrieved_from_database == false) || ($retrieved_from_database == true && $movie -> hasDetails == false)) {
+                list($movie, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+            }
+        }
+
+
+        if (($this->use_memcache == true && $retrieved_from_memcache == false) && ($retrieved_from_database == true || $retrieved_from_curl == true)) {
+            $this->memcache_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
+            $updated_memcache = true;
+        }
+
+        if (($retrieved_from_memcache == false && ($this->use_database == true && $retrieved_from_database == false)) && $retrieved_from_curl == true) {
+            $this->database_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
+            $updated_database = true;
+        }
+        
+        if ($this->use_database == true && $retrieved_from_curl == true && $movie -> hasDetails == true) {
+            $this->database_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
+            $updated_database = true;
+        }
+
+        
+
+        $error_messages = array_merge($error_messages, $new_error_messages);
+
+        if ($this->verbose == true) {
+            echo "<br/>Movie details: " . $id;
+            echo "<br/>Retrieved from memcache: " . $retrieved_from_memcache;
+            echo "<br/>Retrieved from database: " . $retrieved_from_database;
+            echo "<br/>Retrieved from curl: " . $retrieved_from_curl;
+
+            echo "<br/>Updated memcache: " . $updated_memcache;
+            echo "<br/>Updated database: " . $updated_database;
+        }
+
+
+
+        return array($movie, $error_messages);
+    }
+
     // Indexes Duplicates like so:
     //    $array["$movie_name ($year)"][$provider]
     public function get_collated_movie_list_with_details() {
         $movies = $this->movies;
+        $error_messages = array();
+
         foreach ($this->movie_providers as $provider_name => $provider) {
+
+            list($movies[$provider_name], $new_error_messages) = $this->cache_logic_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
             //var_dump($provider_name);
             //var_dump($provider);
-            $movies[$provider_name] = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+            $error_messages = array_merge($error_messages, $new_error_messages);
         }
 
         foreach ($movies as $provider_name => $provider_movies) {
             foreach ($provider_movies as $name_and_year => $movie) {
                 $id = $movie->ID;
-                list($movie, $error_messages) = $this->memcache_get_movie_details_by_provider_and_id($provider_name, $id);
+                list($movie, $error_messages) = $this->cache_logic_get_movie_details_by_provider_and_id($provider_name, $id);
                 //$movie->set_details($movie_details);
                 $movies[$provider_name][$name_and_year] = $movie;
             }
@@ -98,7 +215,7 @@ class model {
         $movies = $this->movies;
         $error_messages = array();
         foreach ($this->movie_providers as $provider_name => $provider) {
-            list($movies[$provider_name], $new_error_messages) = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+            list($movies[$provider_name], $new_error_messages) = $this->cache_logic_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
             $error_messages = array_merge($error_messages, $new_error_messages);
         }
 
@@ -171,6 +288,8 @@ class model {
         $searchkeyvalues = array("provider" => $provider_name, "movies" => "movies",
             "keyed_by" => "name_and_year");
 
+
+
         // Try memcached first, 
         if ($this->verbose == true) {
             echo "\nTrying memcached for movies list for " . $provider_name;
@@ -183,6 +302,51 @@ class model {
             }
         }
 
+        return array($movies_keyed_by_name_and_year, $found, $error_messages);
+    }
+
+    public function memcache_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year) {
+        $found = false;
+        $error_messages = array();
+        $searchkeyvalues = array("provider" => $provider_name, "movies" => "movies",
+            "keyed_by" => "name_and_year");
+
+
+
+        if ($movies_keyed_by_name_and_year != array()) {
+            if ($this->verbose == true) {
+                echo "\nStoring movies list in memcached ";
+            }
+
+
+            $this->memcache_store->store_search($searchkeyvalues, $movies_keyed_by_name_and_year, $this->memcache_expiry);
+        }
+
+        return true;
+    }
+
+    public function memcache_get_movies_list_by_provider_keyed_by_name_and_year_old($provider_name) {
+        $found = false;
+        $error_messages = array();
+        $searchkeyvalues = array("provider" => $provider_name, "movies" => "movies",
+            "keyed_by" => "name_and_year");
+
+
+
+        // Try memcached first, 
+        if ($this->verbose == true) {
+            echo "\nTrying memcached for movies list for " . $provider_name;
+        }
+        list($found, $movies_keyed_by_name_and_year, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
+
+        if ($found == true) {
+            if ($this->verbose == true) {
+                echo "\nFound movies list in memcached";
+            }
+        }
+
+
+
         if ($found == false) {
             if ($this->verbose == true) {
                 echo "\nNothing found for movies list in memcached ";
@@ -193,6 +357,8 @@ class model {
                 if ($this->verbose == true) {
                     echo "\nStoring movies list in memcached ";
                 }
+
+
                 $this->memcache_store->store_search($searchkeyvalues, $movies_keyed_by_name_and_year, $this->memcache_expiry);
             }
         }
@@ -200,54 +366,34 @@ class model {
         return array($movies_keyed_by_name_and_year, $error_messages);
     }
 
+    public function database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $new_movies_keyed_by_name_and_year) {
+        $error_messages = array();
+
+        $movies_keyed_by_name_and_year = $this->database->get_all_movies_by_provider_keyed_by_name_and_year($provider_name);
+
+        // Write to database where doesn't already exist
+        // TODO: Make it write if there's been a change.
+        //TODO: Don't continue with write if there was a DB error
+        foreach ($new_movies_keyed_by_name_and_year as $name_and_year => $movie) {
+            if (!isset($movies_keyed_by_name_and_year[$name_and_year])) {
+                $this->database->add_movie($movie);
+            }
+        }
+
+        return true;
+    }
+
     public function database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name) {
         $error_messages = array();
         $found = false;
 
         $movies_keyed_by_name_and_year = $this->database->get_all_movies_by_provider_keyed_by_name_and_year($provider_name);
-
-        list($new_movies_keyed_by_name_and_year, $error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
-
-        if ($this->verbose == true) {
-            echo "Probably retrieved the movie list from the server! :p";
-        }
-        
-        // Write to database
-        foreach ($new_movies_keyed_by_name_and_year as $name_and_year => $movie) {
-            if (!isset($movies_keyed_by_name_and_year[$name_and_year]))
-            {
-                $this->database->add_movie($movie);
-            }
-        }
-        
-
-        return array($movies_keyed_by_name_and_year, $error_messages);
-    }
-
-    public function database_get_movies_list_by_provider_keyed_by_name_and_year_old($provider_name) {
-        $error_messages = array();
-        $found = false;
-
-        $movies_keyed_by_name_and_year = $this->database->get_all_movies_by_provider_keyed_by_name_and_year($provider_name);
-
-        if ($movies_keyed_by_name_and_year == array()) {
-            $found = false;
-        } else {
+        //TODO:
+        if ($movies_keyed_by_name_and_year != array()) {
             $found = true;
         }
-        if ($found = false) {
-            list($movies_keyed_by_name_and_year, $error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
 
-            if ($this->verbose == true) {
-                echo "Probably retrieved the movie list from the server! :p";
-            }
-            // Write to database
-            foreach ($movies_keyed_by_name_and_year as $name_and_year => $movie) {
-                $this->database->add_movie($movie);
-            }
-        }
-
-        return array($movies_keyed_by_name_and_year, $error_messages);
+        return array($movies_keyed_by_name_and_year, $found, $error_messages);
     }
 
     public function memcache_get_movies_list_by_provider_keyed_by_id($provider_name) {
@@ -259,7 +405,9 @@ class model {
         if ($this->verbose == true) {
             echo "\nTrying memcached for movies list " . $provider_name;
         }
+
         list($found, $movies_keyed_by_id, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
+
 
         $error_messages[] = $error_message;
 
@@ -281,13 +429,14 @@ class model {
                 if ($this->verbose == true) {
                     echo "\nStoring movies list in memcached ";
                 }
+
                 $this->memcache_store->store_search($searchkeyvalues, $movies_keyed_by_id, $this->memcache_expiry);
             }
         }
 
         return array($movies_keyed_by_id, $error_messages);
     }
-
+    
     public function memcache_get_movie_details_by_provider_and_id($provider_name, $id) {
         $found = false;
         $movie = null;
@@ -298,7 +447,54 @@ class model {
         if ($this->verbose == true) {
             echo "\nTrying to find movie details in memcached " . $provider_name . " " . $id;
         }
+
         list($found, $movie, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
+
+
+        if ($found == true) {
+            if ($this->verbose == true) {
+                echo "\nFound movie detail in memcached";
+            }
+        }
+
+        return array($movie, $found, $error_messages);
+    }
+
+    
+    public function memcache_put_movie_details_by_provider_and_id($provider_name, $id, $movie) {
+        $found = false;
+        $error_messages = array();
+
+        $searchkeyvalues = array("provider" => $provider_name, "movie" => "movie", "id" => $id);
+
+            
+
+            if ($movie != null) {
+                if ($this->verbose == true) {
+                    echo "\nStoring movie details in memcached ";
+                }
+
+                $this->memcache_store->store_search($searchkeyvalues, $movie, $this->memcache_expiry);
+            }
+        
+
+        return array($movie, $found, $error_messages);
+    }
+
+
+    public function memcache_get_movie_details_by_provider_and_id_old($provider_name, $id) {
+        $found = false;
+        $movie = null;
+        $error_messages = array();
+
+        $searchkeyvalues = array("provider" => $provider_name, "movie" => "movie", "id" => $id);
+        // Try memcached first, 
+        if ($this->verbose == true) {
+            echo "\nTrying to find movie details in memcached " . $provider_name . " " . $id;
+        }
+
+        list($found, $movie, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
+
 
         if ($found == true) {
             if ($this->verbose == true) {
@@ -316,15 +512,17 @@ class model {
                 if ($this->verbose == true) {
                     echo "\nStoring movie details in memcached ";
                 }
+
                 $this->memcache_store->store_search($searchkeyvalues, $movie, $this->memcache_expiry);
             }
         }
 
-        return array($movie, $error_messages);
+        return array($movie, $found, $error_messages);
     }
 
     public function curl_get_movie_details_by_provider_and_id_retry($provider_name, $id) {
         $movie = null;
+        $found = false;
         $error_messages = array();
 
         if ($this->verbose == true) {
@@ -351,6 +549,11 @@ class model {
 
                 $movie = new \moviesite\movie($movie_details);
                 $movie->hasDetails = true;
+                
+                if ($movie_details != array())
+                {
+                    $found = true;
+                }
                 //$movie -> set_details($movie_details);
                 $success = true;
                 break;
@@ -373,7 +576,7 @@ class model {
             $error_messages = array();
         }
 
-        return array($movie, $error_messages);
+        return array($movie, $found, $error_messages);
     }
 
     public function curl_get_movies_list_by_provider_keyed_by_id($provider_name) {
@@ -488,10 +691,12 @@ class model {
     public function curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name) {
         $movies_keyed_by_id = array();
         $error_messages = array();
+        $found = false;
 
         if ($this->verbose == true) {
             echo "Attempting to get movie list via curl";
         }
+
 
         $success = false;
         $num_attempts = $this->num_retry_attempts;
@@ -516,6 +721,10 @@ class model {
                     $new_movie = new movie($raw_movie);
                     $movies_keyed_by_id[$id] = $new_movie;
                 }
+
+                if (count($movies_keyed_by_id) > 0) {
+                    $found = true;
+                }
                 $success = true;
                 break;
             } catch (\Exception $ex) {
@@ -538,7 +747,7 @@ class model {
         }
 
 
-        return array($movies_keyed_by_id, $error_messages);
+        return array($movies_keyed_by_id, $found, $error_messages);
     }
 
     public function get_movie_with_details_attached($provider_name, $id) {
@@ -548,7 +757,7 @@ class model {
         //list($movie, $error_messages) = $this->get_movie_by_provider_and_id($provider_name, $id);
         //if ($movie != null) {
 
-        list($movie, $new_error_messages) = $this->database_get_movie_details_by_provider_and_id($provider_name, $id);
+            list($movie, $new_error_messages) = $this->cache_logic_get_movie_details_by_provider_and_id($provider_name, $id);
 
         $error_messages = array_merge($error_messages, $new_error_messages);
 
@@ -556,7 +765,7 @@ class model {
 
         return array($movie, $error_messages);
     }
-
+    
     function database_get_movie_details_by_provider_and_id($provider_name, $id) {
         $movie = null;
         $found = false;
@@ -564,7 +773,7 @@ class model {
         $error_messages = array();
 
         if ($this->verbose == true) {
-            echo "Checking database for movie";
+            echo "Checking database for movie " . $id;
         }
 
         $movies = $this->database->get_all_movies_by_provider_keyed_by_id($provider_name);
@@ -572,6 +781,82 @@ class model {
         if ($movies == array()) {
             $found = false;
         }
+
+        //var_dump($movies[$id]);
+
+        if (isset($movies[$id])) {
+            $found = true;
+            $movie = $movies[$id];
+            $hasdetails = $movie->hasDetails;
+        }
+
+        return array($movie, $found, $error_messages);
+    }
+    
+    function database_put_movie_details_by_provider_and_id($provider_name, $id, $movie) {
+        $found = false;
+        $hasdetails = false;
+        $error_messages = array();
+
+        if ($this->verbose == true) {
+            echo "Checking database for movie " . $id;
+        }
+
+        $movies = $this->database->get_all_movies_by_provider_keyed_by_id($provider_name);
+
+        if ($movies == array()) {
+            $found = false;
+        }
+
+        //var_dump($movies[$id]);
+
+        if (isset($movies[$id])) {
+            $found = true;
+            $saved_movie = $movies[$id];
+            $hasdetails = $saved_movie->hasDetails;
+        }
+
+
+
+            if ($hasdetails == false) {
+                
+                if ($movie != null) {
+                    $this->database->update_movie($movie);
+                }
+                
+                if ($this -> verbose == true)
+                {
+                    echo "Movie has no details, updating";
+                }
+            } else {
+                //echo "has details";
+                if ($this -> verbose == true)
+                {
+                    echo "Movie has details, doing nothing";
+                }
+            }
+        return array($movie, $found, $error_messages);
+    }
+
+
+
+    function database_get_movie_details_by_provider_and_id_old($provider_name, $id) {
+        $movie = null;
+        $found = false;
+        $hasdetails = false;
+        $error_messages = array();
+
+        if ($this->verbose == true) {
+            echo "Checking database for movie " . $id;
+        }
+
+        $movies = $this->database->get_all_movies_by_provider_keyed_by_id($provider_name);
+
+        if ($movies == array()) {
+            $found = false;
+        }
+
+        //var_dump($movies[$id]);
 
         if (isset($movies[$id])) {
             $found = true;
@@ -581,7 +866,7 @@ class model {
 
         if ($found == false) {
             if ($this->verbose == true) {
-                echo "Movie details not found - movie not found in database";
+                echo "Movie details not found - movie not found in database " . $id;
             }
             list($movie, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
 
@@ -594,7 +879,7 @@ class model {
 
             if ($hasdetails == false) {
                 if ($this->verbose == true) {
-                    echo "Movie found in database movie list but has no details :p";
+                    echo "Movie found in database movie list but has no details :p " . $id;
                 }
                 list($movie, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
 
@@ -603,9 +888,11 @@ class model {
                 if ($movie != null) {
                     $this->database->update_movie($movie);
                 }
+            } else {
+                //echo "has details";
             }
         }
-        return array($movie, $error_messages);
+        return array($movie, $found, $error_messages);
     }
 
     public function get_movie_by_provider_and_id($provider_name, $id) {
@@ -805,3 +1092,62 @@ class model {
     }
 
 }
+
+/*
+ * 
+ *     public function database_get_movies_list_by_provider_keyed_by_name_and_year_old($provider_name) {
+        $error_messages = array();
+        $found = false;
+
+        $movies_keyed_by_name_and_year = $this->database->get_all_movies_by_provider_keyed_by_name_and_year($provider_name);
+
+        //TODO: configuration file with last-retrieved-time for movies list
+        
+        
+        list($new_movies_keyed_by_name_and_year, $error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
+
+        if ($this->verbose == true) {
+            echo "Probably retrieved the movie list from the server! :p";
+        }
+
+        // Write to database where doesn't already exist
+        // TODO: Make it write if there's been a change.
+        //TODO: Don't continue with write if there was a DB error
+        foreach ($new_movies_keyed_by_name_and_year as $name_and_year => $movie) {
+            if (!isset($movies_keyed_by_name_and_year[$name_and_year])) {
+                $this->database->add_movie($movie);
+            }
+        }
+
+        return array($movies_keyed_by_name_and_year, $error_messages);
+    }
+
+
+    public function database_get_movies_list_by_provider_keyed_by_name_and_year_older($provider_name) {
+        $error_messages = array();
+        $found = false;
+
+        $movies_keyed_by_name_and_year = $this->database->get_all_movies_by_provider_keyed_by_name_and_year($provider_name);
+
+        if ($movies_keyed_by_name_and_year == array()) {
+            $found = false;
+        } else {
+            $found = true;
+        }
+        if ($found = false) {
+            list($movies_keyed_by_name_and_year, $error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
+
+            if ($this->verbose == true) {
+                echo "Probably retrieved the movie list from the server! :p";
+            }
+            // Write to database
+            foreach ($movies_keyed_by_name_and_year as $name_and_year => $movie) {
+                $this->database->add_movie($movie);
+            }
+        }
+
+        return array($movies_keyed_by_name_and_year, $error_messages);
+    }
+
+
+ */

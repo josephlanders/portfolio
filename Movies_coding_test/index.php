@@ -22,13 +22,28 @@ class moviethingy {
         $view = $this->view;
         $controller = $this -> controller;
         
+        $before = microtime(true);
+        
         $data = $controller -> control_stuff($page);
-        $view -> draw_page($page, $data);
+        
+        $after = microtime(true);
+        
+        $total_time = $after - $before;
+        
+        "time taken: " . $total_time;
+
+        $data["controller_time"] = $total_time;
+        $view -> draw_page($page, $data);        
     }
 }
 ?>
 
-<!DOCTYPE html>
+
+        <?php
+        
+          /*
+           * 
+           <!DOCTYPE html>
 
 <html>
     <head>
@@ -42,9 +57,6 @@ class moviethingy {
     </body>
 </html>
 
-        <?php
-        
-          /*
           array(19) {
           ["Title"]=>
           string(44) "Star Wars: Episode II - Attack of the Clones"

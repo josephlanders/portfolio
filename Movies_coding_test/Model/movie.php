@@ -30,6 +30,7 @@ class movie {
    public $Type = "";
    private $Price = null;
    public $Detail = "";
+   public $datemodified = null;
 
     function __construct($array) {
         foreach ($array as $key => $value) {
