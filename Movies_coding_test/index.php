@@ -2,9 +2,9 @@
 
 namespace moviesite;
 
-require_once("Model/model.php");
-require_once("Controller/controller.php");
-require_once("View/view.php");
+require_once(dirname(__FILE__) . "/Model/model.php");
+require_once(dirname(__FILE__) . "/Controller/controller.php");
+require_once(dirname(__FILE__) . "/View/view.php");
 
 class moviethingy {
 

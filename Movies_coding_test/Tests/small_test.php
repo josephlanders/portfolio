@@ -16,8 +16,8 @@ class SmallTest extends PHPUnit_Framework_TestCase {
             echo getcwd();
         }
 
-        //require_once("../Model/memcache_store.php");
-        require_once("../Model/model.php");
+        //require_once(dirname(__FILE__) . "/../Model/memcache_store.php");
+        require_once(dirname(__FILE__) . "/../Model/model.php");
 
         $fields = array("getpost_array" => null, );
         //$this->model = new moviesite\model($fields);

@@ -2,7 +2,7 @@
 
 namespace moviesite;
 
-require_once("index.php");
+require_once(dirname(__FILE__) . "/index.php");
 
 $list_movies_page =  new list_movies_page();
 

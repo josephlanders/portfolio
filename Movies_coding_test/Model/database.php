@@ -5,7 +5,7 @@ namespace moviesite;
 
 <?php
 
-require_once ("movie.php");
+require_once (dirname(__FILE__) . "/movie.php");
 
 class database {
 
@@ -18,11 +18,9 @@ class database {
 
     public function __construct() {
         $this->hostname = "localhost";
-        //$this->username = "webmovies";
-        //$this->password = "moviesweb";
+        $this->username = "webmovies";
+        $this->password = "moviesweb";
         // Don't do this on a production system.
-        $this->username = "root";
-        $this->password = "Crusades";
 
         $this->database_name = "webmovies";
     }
@@ -273,7 +271,7 @@ class database {
    $Votes,
    $Type,
    $Price)";
-        echo $query;
+        #echo $query;
         /* Select queries return a resultset */
         /* Get the data into an array so that we can close the mysql connection */
         $result = $this->execute_query_single($query);
@@ -457,7 +455,7 @@ $Provider,
    $Votes,
    $Type,
    $Price)";
-        echo $query;
+        #echo $query;
         #die();
 
         /* Select queries return a resultset */

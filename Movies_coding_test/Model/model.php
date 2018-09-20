@@ -2,11 +2,11 @@
 
 namespace moviesite;
 
-require_once("movie_provider.php");
-require_once("memcache_store.php");
-require_once("movie.php");
-require_once("movie_provider.php");
-require_once("database.php");
+require_once(dirname(__FILE__) . "/movie_provider.php");
+require_once(dirname(__FILE__) . "/memcache_store.php");
+require_once(dirname(__FILE__) . "/movie.php");
+require_once(dirname(__FILE__) . "/movie_provider.php");
+require_once(dirname(__FILE__) . "/database.php");
 
 /**
  * Description of model

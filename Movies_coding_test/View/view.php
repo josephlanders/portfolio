@@ -2,8 +2,8 @@
 
 namespace moviesite;
 
-require_once("View\list_movies.php");
-require_once("View\movie_detail.php");
+require_once(dirname(__FILE__) . "/list_movies.php");
+require_once(dirname(__FILE__) . "/movie_detail.php");
 
 /**
  * Description of view
