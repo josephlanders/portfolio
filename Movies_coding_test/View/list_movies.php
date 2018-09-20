@@ -39,7 +39,7 @@ class list_movies {
                     <div style="float:left;clear:left;width:800px;height:300px;padding:20px;margin-left:25%;margin-right:25%;margin-top:10px;border:grey 1px solid">
                         <div style="float:left;width:400px;">
                             <div style="float:left;"><h2 style="font-size: 15px;">Provider: <?php echo $provider_name; ?></h2></div> 
-                            <div style="float:left;"><h2 style="font-size: 15px;"><?php echo $movie_by_provider->get_display_name(); ?></h2></div>
+                            <div style="float:left;clear:left;"><h2 style="font-size: 15px;"><?php echo $movie_by_provider->get_display_name(); ?></h2></div>
                         </div>
                         <div style="float:left;width:200px;height:300px;margin-left:20px;">
                         <a href="/movie_detail.php?provider=<?php echo $provider_name; ?>&id=<?php echo $movie_by_provider->get_ID(); ?>">
