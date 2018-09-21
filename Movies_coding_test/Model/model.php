@@ -9,11 +9,6 @@ require_once(dirname(__FILE__) . "/movie_provider.php");
 require_once(dirname(__FILE__) . "/database.php");
 require_once(dirname(__FILE__) . "/../configuration/configuration.php");
 
-/**
- * Description of model
- *
- * @author z
- */
 class model {
 
     private $response_array = "";
@@ -23,7 +18,7 @@ class model {
     private $movies = array();
     private $getpost_array = array();
     private $use_exponential_backoff = true;
-    // Set to 1
+    // Set to 1 minimum
     private $num_retry_attempts = 3;
     private $verbose = true;
     private $database = null;
@@ -98,29 +93,21 @@ class model {
             $cache_invalid = true;
         }
 
-
-        if ($cache_invalid == true) {
-            list($movies_keyed_by_name_and_year, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
-            if ($retrieved_from_curl == true) {
-                $this->memcache_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
-                $this->database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
-                $updated_memcache = true;
-                $updated_database = true;
-            }
-        }
-
         if ($cache_invalid == false) {
             if ($this->use_memcache == true) {
                 list($movies_keyed_by_name_and_year, $retrieved_from_memcache, $new_error_messages) = $this->memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+                $error_messages = array_merge($error_messages, $new_error_messages);
             }
 
             if ($retrieved_from_memcache == false) {
                 if ($this->use_database == true) {
                     list($movies_keyed_by_name_and_year, $retrieved_from_database, $new_error_messages) = $this->database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+                    $error_messages = array_merge($error_messages, $new_error_messages);
                 }
 
                 if ($retrieved_from_database == false) {
                     list($movies_keyed_by_name_and_year, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
+                    $error_messages = array_merge($error_messages, $new_error_messages);
                 }
             }
 
@@ -133,6 +120,16 @@ class model {
             if (($retrieved_from_memcache == false && ($this->use_database == true && $retrieved_from_database == false)) && $retrieved_from_curl == true) {
                 $this->database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
                 $updated_database = true;
+            }                        
+        }
+        
+        if ($cache_invalid == true) {
+            list($movies_keyed_by_name_and_year, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
+            if ($retrieved_from_curl == true) {
+                $this->memcache_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
+                $this->database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
+                $updated_memcache = true;
+                $updated_database = true;
             }
         }
 
@@ -143,7 +140,7 @@ class model {
             $this->configuration->set_setting($setting_name, $value);
         }
 
-        $error_messages = array_merge($error_messages, $new_error_messages);
+        
 
         if ($this->verbose == true) {
             echo "<br/><br/>(Debug data for the actions that occurred above)";
@@ -176,6 +173,7 @@ class model {
 
         if ($this->use_memcache == true) {
             list($movie, $retrieved_from_memcache, $new_error_messages) = $this->memcache_get_movie_details_by_provider_and_id($provider_name, $id);
+            $error_messages = array_merge($error_messages, $new_error_messages);
         }
 
         if ($retrieved_from_memcache == true) {
@@ -198,6 +196,7 @@ class model {
             if ($retrieved_from_memcache == false) {
                 if ($this->use_database == true) {
                     list($movie, $retrieved_from_database, $new_error_messages) = $this->database_get_movie_details_by_provider_and_id($provider_name, $id);
+                    $error_messages = array_merge($error_messages, $new_error_messages);
                 }
 
                 if ($retrieved_from_database == true) {
@@ -214,6 +213,7 @@ class model {
 
                 if (($retrieved_from_database == false) || ($retrieved_from_database == true && $movie->hasDetails == false)) {
                     list($movie, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+                    $error_messages = array_merge($error_messages, $new_error_messages);
                 }
             }
 
@@ -233,13 +233,12 @@ class model {
                 $updated_database = true;
             }
         }
-
-
-        $error_messages = array_merge($error_messages, $new_error_messages);
         
         if ($cache_invalid == true) {
             //echo "cache invalid";
             list($movie, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+            $error_messages = array_merge($error_messages, $new_error_messages);
+            
             if ($retrieved_from_curl == true) {
                 $this->memcache_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
                 $this->database_put_movie_details_by_provider_and_id($provider_name, $id, $movie);

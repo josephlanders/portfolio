@@ -2,11 +2,6 @@
 
 namespace moviesite;
 
-/**
- * Description of memcached_store
- *
- * @author z
- */
 class memcache_store {
 
     private $searches = array();

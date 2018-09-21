@@ -2,18 +2,15 @@
 
 namespace moviesite;
 
-/**
- * Description of view
- *
- * @author z
- */
 class movie_detail {
 
-    public function __construct() {
-        
+    private $data = array();
+    public function __construct($data) {
+        $this -> data = $data;
     }
 
-    public function draw($data) {
+    public function draw() {
+        $data = $this -> data;
         $provider_name = $data["provider_name"];
         $movie = $data["movie"];
         $alternate_movies = $data["alternate_movies"];
@@ -69,5 +66,12 @@ class movie_detail {
         </div>
         <?php
     }
-
+    
+    public function title()
+    {
+        $data = $this -> data;
+        $provider_name = $data["provider_name"];
+        $movie = $data["movie"];
+        echo $movie -> get_display_name() . " by " . $provider_name;
+    }
 }

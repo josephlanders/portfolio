@@ -2,11 +2,6 @@
 
 namespace moviesite;
 
-/**
- * Description of movie
- *
- * @author z
- */
 class movie {
    private $Provider = "";
    private $ID = "";

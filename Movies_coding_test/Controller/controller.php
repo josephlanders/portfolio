@@ -2,11 +2,6 @@
 
 namespace moviesite;
 
-/**
- * Description of controller
- *
- * @author z
- */
 class controller {
     private $model = null;
     public function __construct($model)

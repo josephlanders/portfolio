@@ -2,18 +2,15 @@
 
 namespace moviesite;
 
-/**
- * Description of view
- *
- * @author z
- */
 class list_movies {
 
-    public function __construct() {
-        
+    private $data = array();
+    public function __construct($data) {
+        $this -> data = $data;
     }
 
-    public function draw($data) {
+    public function draw() {
+        $data = $this -> data;
         $all_movies_list = $data["all_movies_list"];
         $error_messages = $data["error_messages"];
         ?>
@@ -60,6 +57,14 @@ class list_movies {
             <div style="float:left;clear:both;">Data retrieval time: <?php echo $data["controller_time"]; ?></div>
         </div>
         <?php
+    }
+    
+    public function title()
+    {
+        $data = $this -> data;
+        ?>
+Movie List
+<?php
     }
 
 }
