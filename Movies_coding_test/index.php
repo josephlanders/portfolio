@@ -28,9 +28,7 @@ class moviethingy {
         
         $after = microtime(true);
         
-        $total_time = $after - $before;
-        
-        "time taken: " . $total_time;
+        $total_time = $after - $before;       
 
         $data["controller_time"] = $total_time;
         $view -> draw_page($page, $data);        
