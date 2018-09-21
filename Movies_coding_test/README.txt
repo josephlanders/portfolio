@@ -12,9 +12,9 @@ and force an update the database/memcached if necessary.
 For instance, we might decide to scrape the movie lists twice a day or
 to scrape the movie details every 30 mins to check for price updates.
 
+
 Design limitations due to API limitations
 ------------------------------------
-
 
 1.) No price on listings page
 
@@ -36,12 +36,16 @@ Otherwise, the number of requests on first load with a cleared cache is too high
 2.) I would prefer to have one movie image on the movie listings page and multiple providers listed.
  However, as per 1.) This can't be done without multiple get movie details requests.
 
+
 Things missing
 ---------------
 
 1.) Code is missing comments
 2.) Tests are not comprehensive - only test the retrieval logic from the different caches.
 3.) Database Fields all use VARCHAR(256) (something that wouldn't normally do, but I am time constrained)
+4.) CSS is not in CSS file :P
+
+I have time constraints and would normally iterate over this and add the above.
 
 
 Assumptions
@@ -56,6 +60,7 @@ Setup instructions
 I don't think you should try to set this up! :P
 
 It needs apache, php, php-memcache, memcache, php-mbstring, mariadb and modifications to php.ini for memcache extension.
+
 
 Running the tests
 -----------------
