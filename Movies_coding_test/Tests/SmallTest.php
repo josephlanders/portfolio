@@ -29,18 +29,82 @@ class SmallTest extends TestCase {
     }   
     
     public function testgetMovieListFromCache() {            
-        $provider_name = "filmworld";
+        
+        echo "\n\ntestgetMovieListFromCache";
+        $provider_name = "cinemaworld";
         list($movies_keyed_by_name_and_year, $error_messages) = $this -> model -> cache_logic_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
         
+        //$this -> assertEquals($found, true);
        $this -> assertNotEquals($movies_keyed_by_name_and_year, array());
     }
     
+    public function testgetMovieListFromMemCache() {            
+        echo "\n\ntestgetMovieListFromMemCache";
+        $provider_name = "cinemaworld";
+        list($movies_keyed_by_name_and_year, $found, $error_messages) = $this -> model -> memcache_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+        
+        $this -> assertEquals($found, true);
+       //$this -> assertNotEquals($movies_keyed_by_name_and_year, array());
+    }
+    
+    public function testgetMovieListFromDatabase() {            
+        echo "\n\ntestgetMovieListFromDatabase";
+        
+        $provider_name = "cinemaworld";
+        list($movies_keyed_by_name_and_year, $found, $error_messages) = $this -> model -> curl_get_movies_list_by_provider_keyed_by_name_and_year_retry($provider_name);
+        
+        $this -> assertEquals($found, true);
+       //$this -> assertNotEquals($movies_keyed_by_name_and_year, array());
+    }
+    
+    public function testgetMovieListFromCurl() {            
+        echo "\n\ntestgetMovieListFromCurl";
+        $provider_name = "cinemaworld";
+        list($movies_keyed_by_name_and_year, $found, $error_messages) = $this -> model -> database_get_movies_list_by_provider_keyed_by_name_and_year($provider_name);
+       
+        $this -> assertEquals($found, true);
+       //$this -> assertNotEquals($movies_keyed_by_name_and_year, array());
+    }
+
+    
     public function testgetMovieDetailsFromCache() {            
-        $provider_name = "filmworld";
+        echo "\n\ntestgetMovieDetailsFromCache";
+        $provider_name = "cinemaworld";
         $id = "cw0076759";
         list($movie, $error_messages) = $this -> model -> cache_logic_get_movie_details_by_provider_and_id($provider_name, $id);
         
-       $this -> assertNotEquals($movie, array());
+        //$this -> assertEquals($found, true);
+       $this -> assertNotEquals($movie, null);
+    }
+    
+    public function testgetMovieDetailsFromMemCache() {            
+        echo "\n\ntestgetMovieDetailsFromMemCache";
+        $provider_name = "cinemaworld";
+        $id = "cw0076759";
+        list($movie, $found,  $error_messages) = $this -> model -> memcache_get_movie_details_by_provider_and_id($provider_name, $id);
+        
+        $this -> assertEquals($found, true);
+        //$this -> assertNotEquals($movie, null);
+    }
+    
+    public function testgetMovieDetailsFromDatabase() {            
+        echo "\n\ntestgetMovieDetailsFromDatabase";
+        $provider_name = "cinemaworld";
+        $id = "cw0076759";
+        list($movie, $found,  $error_messages) = $this -> model -> database_get_movie_details_by_provider_and_id($provider_name, $id);
+        
+        $this -> assertEquals($found, true);
+        //$this -> assertNotEquals($movie, null);
+    }
+    
+    public function testgetMovieDetailsFromCurl() {            
+        echo "\n\ntestgetMovieDetailsFromCurl";
+        $provider_name = "cinemaworld";
+        $id = "cw0076759";
+        list($movie, $found, $error_messages) = $this -> model -> curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
+        
+        $this -> assertEquals($found, true);
+        //$this -> assertNotEquals($movie, null);
     }
 }
 
