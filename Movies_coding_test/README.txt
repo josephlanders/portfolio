@@ -26,6 +26,9 @@ Suggestion:
  API redesign to provide price in movie list or
  API redesign to provide multiple details {cw123123,fw124134,cw124123} in one request.
 
+or
+ I could warmup the movie details with a background cron script
+
 2.) Multiple Movie listings instead of collating movies with the same "name (year)"
 
 This is because of 

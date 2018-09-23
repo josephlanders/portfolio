@@ -29,13 +29,12 @@ class model {
     private $scrape_movie_detail_expiry = 30;
 
     function __construct() {
-        if ($this -> verbose == true)
-        {
-            echo "<br/>Memcached Expiry: " . $this -> memcache_expiry . " seconds";
-            echo "<br/>Curl retry attempts: " . $this -> num_retry_attempts;
-            echo "<br/>Curl Exponential Backoff: " . $this -> use_exponential_backoff;
-            echo "<br/>Movie List Scraped data expiry time: " . $this -> scrape_movies_expiry . " seconds";
-            echo "<br/>Movie detail Scraped data expiry time: " . $this -> scrape_movie_detail_expiry . " seconds";
+        if ($this->verbose == true) {
+            echo "<br/>Memcached Expiry: " . $this->memcache_expiry . " seconds";
+            echo "<br/>Curl retry attempts: " . $this->num_retry_attempts;
+            echo "<br/>Curl Exponential Backoff: " . $this->use_exponential_backoff;
+            echo "<br/>Movie List Scraped data expiry time: " . $this->scrape_movies_expiry . " seconds";
+            echo "<br/>Movie detail Scraped data expiry time: " . $this->scrape_movie_detail_expiry . " seconds";
             echo "<br/>";
         }
 
@@ -120,9 +119,9 @@ class model {
             if (($retrieved_from_memcache == false && ($this->use_database == true && $retrieved_from_database == false)) && $retrieved_from_curl == true) {
                 $this->database_put_movies_list_by_provider_keyed_by_name_and_year($provider_name, $movies_keyed_by_name_and_year);
                 $updated_database = true;
-            }                        
+            }
         }
-        
+
         if ($cache_invalid == true) {
             list($movies_keyed_by_name_and_year, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movies_list_by_provider_keyed_by_id_retry($provider_name);
             if ($retrieved_from_curl == true) {
@@ -140,7 +139,7 @@ class model {
             $this->configuration->set_setting($setting_name, $value);
         }
 
-        
+
 
         if ($this->verbose == true) {
             echo "<br/><br/>(Debug data for the actions that occurred above)";
@@ -233,12 +232,12 @@ class model {
                 $updated_database = true;
             }
         }
-        
+
         if ($cache_invalid == true) {
             //echo "cache invalid";
             list($movie, $retrieved_from_curl, $new_error_messages) = $this->curl_get_movie_details_by_provider_and_id_retry($provider_name, $id);
             $error_messages = array_merge($error_messages, $new_error_messages);
-            
+
             if ($retrieved_from_curl == true) {
                 $this->memcache_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
                 $this->database_put_movie_details_by_provider_and_id($provider_name, $id, $movie);
@@ -281,7 +280,7 @@ class model {
             foreach ($provider_movies as $name_and_year => $movie) {
                 $id = $movie->ID;
                 list($movie, $error_messages) = $this->cache_logic_get_movie_details_by_provider_and_id($provider_name, $id);
-                $name_and_year = $movie -> get_display_name();
+                $name_and_year = $movie->get_display_name();
                 $movies[$provider_name][$name_and_year] = $movie;
             }
         }
@@ -377,14 +376,13 @@ class model {
         }
         list($found, $movies_keyed_by_name_and_year, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
 
-        if ($found == true) {
-            if ($this->verbose == true) {
+        if ($this->verbose == true) {
+            if ($found == true) {
                 echo "<br/>Found movies list in memcached";
-            }
-        } else {
-            if ($this->verbose == true) {
+            } else {
+
                 echo "<br/>Didn't find movies list in memcached";
-            }            
+            }
         }
 
         return array($movies_keyed_by_name_and_year, $found, $error_messages);
@@ -418,7 +416,7 @@ class model {
         // TODO: Make it write if there's been a change.
         //TODO: Don't continue with write if there was a DB error
         foreach ($new_movies_keyed_by_name_and_year as $name_and_year => $movie) {
-            $name_and_year = $movie -> get_display_name();
+            $name_and_year = $movie->get_display_name();
             if (!isset($movies_keyed_by_name_and_year[$name_and_year])) {
                 $this->database->add_movie($movie);
             }
@@ -454,13 +452,10 @@ class model {
         list($found, $movie, $error_message) = $this->memcache_store->get_search($searchkeyvalues);
 
 
-        if ($found == true) {
-            if ($this->verbose == true) {
+        if ($this->verbose == true) {
+            if ($found == true) {
                 echo "<br/>Found movie detail in memcached";
-            }
-        } else {
-            if ($this -> verbose == true)
-            {
+            } else {
                 echo "<br/>Didn't find movie detail in memcached";
             }
         }
@@ -520,11 +515,10 @@ class model {
 
                 if ($movie_details != array()) {
                     $found = true;
-                    if ($this -> verbose == true)
-                    {
+                    if ($this->verbose == true) {
                         echo "<br/>Got movie details via curl";
                     }
-                }                
+                }
                 $success = true;
                 break;
             } catch (\Exception $ex) {
@@ -575,9 +569,8 @@ class model {
                     $new_movie = new movie($raw_movie);
                     $movies_keyed_by_id[$id] = $new_movie;
                 }
-                
-                if ($movies_keyed_by_id != array())
-                {
+
+                if ($movies_keyed_by_id != array()) {
                     echo "<br/>Got movies list via curl";
                 }
                 $success = true;
@@ -636,9 +629,8 @@ class model {
                     $new_movie = new movie($raw_movie);
                     $movies_keyed_by_name_and_year[$searchkey] = $new_movie;
                 }
-                
-                if ($movies_keyed_by_name_and_year != array())
-                {
+
+                if ($movies_keyed_by_name_and_year != array()) {
                     echo "<br/>Got movies list via curl";
                     $found = true;
                 }
@@ -663,7 +655,7 @@ class model {
         if ($success == true) {
             $error_messages = array();
         }
-                
+
 
         return array($movies_keyed_by_name_and_year, $found, $error_messages);
     }
@@ -701,9 +693,8 @@ class model {
                     $new_movie = new movie($raw_movie);
                     $movies_keyed_by_id[$id] = $new_movie;
                 }
-                
-                if ($movies_keyed_by_id != array())
-                {
+
+                if ($movies_keyed_by_id != array()) {
                     echo "<br/>Got movies list via curl";
                 }
 
@@ -766,14 +757,13 @@ class model {
         if ($movies == array()) {
             $found = false;
         }
-        
+
         if (isset($movies[$id])) {
             $found = true;
             $movie = $movies[$id];
             $hasdetails = $movie->hasDetails;
-            
-            if ($this -> verbose == true)
-            {
+
+            if ($this->verbose == true) {
                 echo "<br/>Found movies details in database";
             }
         }
@@ -868,7 +858,7 @@ class model {
 
         return $movie;
     }
-    
+
     //unused
     //TODO: Break down into get and put
     public function memcache_get_movies_list_by_provider_keyed_by_id($provider_name) {
@@ -890,7 +880,7 @@ class model {
             if ($this->verbose == true) {
                 echo "<br/>Found movies list in memcached";
             }
-        } 
+        }
 
         if ($found == false) {
             if ($this->verbose == true) {
@@ -911,7 +901,6 @@ class model {
 
         return array($movies_keyed_by_id, $error_messages);
     }
-
 
     public function process_postback($keep) {
         $merged = $this->getpost_array;
@@ -1019,7 +1008,7 @@ class model {
             throw new \Exception("get_movie_details: Connection to movie service " . $provider_name . " timed out, this usually happens the service is down.");
             #echo "timed out";
         }
-        
+
         // close cURL resource, and free up system resources
         curl_close($ch);
 

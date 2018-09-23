@@ -214,11 +214,11 @@ class database {
         $Country = $movie->Country;
         $Awards = $movie->Awards;
         $Poster = $movie->Poster;
-        $Metascore = $movie->Metascore;
-        $Rating = $movie->Rating;
-        $Votes = $movie->Votes;
+        $Metascore = (int) $movie->Metascore;
+        $Rating = (double) $movie->Rating;
+        $Votes = (int) $movie->Votes;
         $Type = $movie->Type;
-        $Price = $movie->get_price();
+        $Price = (double) $movie->get_price();
 
         $Provider = $this->make_safe($Provider);
         $ID = $this->make_safe($ID);
@@ -241,11 +241,11 @@ class database {
         $Country = $this->make_safe($Country);
         $Awards = $this->make_safe($Awards);
         $Poster = $this->make_safe($Poster);
-        $Metascore = $this->make_safe($Metascore);
-        $Rating = $this->make_safe($Rating);
-        $Votes = $this->make_safe($Votes);
+        //$Metascore = $this->make_safe($Metascore);
+        //$Rating = $this->make_safe($Rating);
+        //$Votes = $this->make_safe($Votes);
         $Type = $this->make_safe($Type);
-        $Price = $this->make_safe($Price);
+        //$Price = $this->make_safe($Price);
 
 
 
@@ -271,15 +271,12 @@ class database {
    $Votes,
    $Type,
    $Price)";
-        #echo $query;
+        echo $query;
         /* Select queries return a resultset */
         /* Get the data into an array so that we can close the mysql connection */
         $result = $this->execute_query_single($query);
 
         $this->disconnect();
-
-#$productid = $result["out_productid"];
-#echo $productid;
 
         return $result;
     }
@@ -395,11 +392,11 @@ class database {
         $Country = $movie->Country;
         $Awards = $movie->Awards;
         $Poster = $movie->Poster;
-        $Metascore = $movie->Metascore;
-        $Rating = $movie->Rating;
-        $Votes = $movie->Votes;
+        $Metascore = (int) $movie->Metascore;
+        $Rating = (double)  $movie->Rating;
+        $Votes = (int) $movie->Votes;
         $Type = $movie->Type;
-        $Price = $movie->get_price();
+        $Price = (double) $movie->get_price();
 
         $this->connect();
 
@@ -425,11 +422,11 @@ class database {
         $Country = $this->make_safe($Country);
         $Awards = $this->make_safe($Awards);
         $Poster = $this->make_safe($Poster);
-        $Metascore = $this->make_safe($Metascore);
-        $Rating = $this->make_safe($Rating);
-        $Votes = $this->make_safe($Votes);
+        //$Metascore = $this->make_safe($Metascore);
+        //$Rating = $this->make_safe($Rating);
+        //$Votes = $this->make_safe($Votes);
         $Type = $this->make_safe($Type);
-        $Price = $this->make_safe($Price);
+        //$Price = $this->make_safe($Price);
 
         $movieid = 0;
 
@@ -455,8 +452,7 @@ $Provider,
    $Votes,
    $Type,
    $Price)";
-        #echo $query;
-        #die();
+        echo $query;
 
         /* Select queries return a resultset */
         /* Get the data into an array so that we can close the mysql connection */

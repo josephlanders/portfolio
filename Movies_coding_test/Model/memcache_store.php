@@ -71,7 +71,6 @@ class memcache_store {
 
         $key = $this->make_key($searchkeyvalues);
 
-        //$res = $memcached->set($key, $object, $expiry);
         $res = $memcached->set($key, $object, MEMCACHE_COMPRESSED, $expiry);
 
         if ($res == true) {
@@ -80,9 +79,6 @@ class memcache_store {
 
         if ($res == false) {
             $error_messages[] = "Not added / Server down?";
-            //var_dump($key);
-            //var_dump($object);
-            //throw new \Exception($message);
         }
 
         return array($stored, $error_messages);
