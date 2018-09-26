@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript"
+src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+function validate_firstname()
+{
+   var valid = false;
+   var firstname = $("#firstname").val();
+   var error_message = "";
+
+   if(firstname == "")
+   {
+        error_message = "firstname cannot be blank"      
+   } else {
+      var valid = true;
+   }
+
+   return [valid, error_message];
+}
+
+function validate_lastname()
+{
+   var valid = false;
+   var lastname = $("#lastname").val();
+   var error_message = "";
+
+   if(lastname == "")
+   {
+        error_message = "lastname cannot be blank"
+   } else {
+      var valid = true;
+   }
+
+   return [valid, error_message];
+}
+
+function validate_email()
+{
+   var valid = false;
+   var email = $("#email").val();
+   var error_message = "";
+
+   if(email == "")
+   {
+        error_message = "email cannot be blank"
+   } else {
+//  So many different ways to do this :p
+//     emailRegex = /^[a-zA-Z0-9.][a-zA-Z0-9-_]+@[a-zA-Z0-9-].+\.[a-zA-Z]{2,5}$/;
+//     emailRegex = /^\w+@\w+\.\w+$/;
+//     emailRegex = /^[a-zA-Z0-9.+-_]+@[a-zA-Z0-9+-_]+\.[a-zA-Z+-_]{2,}$/;
+
+       // Validate a@a.aa
+       emailRegex = /^[\w\d+-_]+@[\w\d+-_]+\.[\w\d+-_]{2,}$/;
+
+       if (!emailRegex.test(email))
+       {
+           error_message  = "email not a valid format";
+       } else {
+           valid = true;
+       }
+   }
+
+   return [valid, error_message];
+}
+
+
+function validate_postcode()
+{
+   var valid = false;
+   var error_message = "";
+   var postcode = $("#postcode").val();
+
+   if(postcode == "")
+   {
+	error_message = "postcode cannot be blank"
+   } else {
+//       postcodeRegex = /^\d{4}$/;
+
+       postcodeRegex = /^[0-9]{4}$/;
+       if (!postcodeRegex.test(postcode))
+       {
+	   error_message = "postcode must be 4 numbers";
+       } else {
+           valid = true;
+       }
+
+   }
+   return [valid, error_message];
+}
+
+function validate_phone_number()
+{
+   var valid = false;
+   var error_message = "";
+   var phone_number = $("#phone").val();
+
+   if(phone_number == "")
+   {
+	error_message = "phone_number cannot be blank"
+   } else {
+//       phoneNumberRegex = /^\d{10}$/;
+
+       phoneNumberRegex = /^[0-9]{10}$/;
+       if (!phoneNumberRegex .test(phone_number))
+       {
+	   error_message = "phone number must be 10 numbers";
+       } else {
+           valid = true;
+       }
+
+   }
+   return [valid, error_message];
+}
+
+function validate_accept()
+{
+   var valid = false;
+   var error_message = "";
+   var accept = $( "#accept" ).prop( "checked" );
+
+   if(accept == true)
+   {
+       valid = true;
+   } else {
+	error_message = "checkbox must be selected"
+   }
+   return [valid, error_message];
+}
+
+function validate()
+{
+   $("#errors").text("hi");
+   
+   var error_color = "LightCoral";
+   var error_message = "";
+
+   var [firstname_valid, firstname_error_message] = validate_firstname();
+   var [lastname_valid, lastname_error_message] = validate_lastname();
+   var [email_valid, email_error_message] = validate_email();
+   var [postcode_valid, postcode_error_message] = validate_postcode();
+   var [phone_number_valid, phone_number_error_message] = validate_phone_number();
+   var [accept_valid, accept_error_message] = validate_accept();
+
+   // We could probably re-write most of the code below as an array and foreach loop
+
+   if (firstname_valid == false)
+   {
+      error_message = firstname_error_message + "<br/>";
+      $("#firstname").css("background-color", error_color);
+   } else {
+      $("#firstname").css("background-color", "white");
+   }
+
+   if (lastname_valid == false)
+   {
+      error_message += lastname_error_message + "<br/>";
+      $("#lastname").css("background-color", error_color);
+   } else {
+      $("#lastname").css("background-color", "white");
+   }
+
+   if (email_valid == false)
+   {
+       error_message += email_error_message + "<br/>";
+       $("#email").css("background-color", error_color);
+   } else {
+      $("#email").css("background-color", "white");
+   }
+
+   if (postcode_valid == false)
+   {
+       error_message += postcode_error_message + "<br/>";
+       $("#postcode").css("background-color", error_color);
+   } else {
+      $("#postcode").css("background-color", "white");
+   }
+
+   if (phone_number_valid == false)
+   {
+       error_message += phone_number_error_message + "<br/>";
+       $("#phone").css("background-color", error_color);
+   } else {
+      $("#phone").css("background-color", "white");
+   }
+
+   if (accept_valid == false)
+   {
+       error_message += accept_error_message + "<br/>";
+       $("#accept_wrapper").css("background-color", error_color);
+   } else {
+      $("#accept_wrapper").css("background-color", "white");
+   }
+
+   if ((firstname_valid == false) || (lastname_valid == false) || (email_valid == false) || (postcode_valid == false)
+       || (phone_number_valid == false) || (accept_valid == false))
+   {
+       $("#required").css("color","red");
+   } else {
+       $("#required").css("color","black");
+   }
+
+//alert(error_message);
+   $("#errors").html(error_message);
+
+}
+</script>
+<style>
+</style>
+</head>
+<body>
+<div id="errors" style="background-color:red"></div>
+<form action="/submit.php" method="post" onsubmit="validate()">
+First name *: <input type="text" name="firstname" id="firstname"><br/>
+Last name *: <input type="text" name="lastname" id="lastname"><br/>
+Email *: <input type="text" name="lastname" id="email"><br/>
+Phone Number *: <input type="text" name="lastname" id="phone"><br/>
+Post Code *: <input type="text" name="lastname" id="postcode"><br/>
+<div id="accept_wrapper">
+<input type="checkbox" name="accept" id="accept" id="accept"> Please add me to your mailing
+list *</div><br/>
+<span id="required">* required fields</span><br/>
+<input type="submit" name="submit" value="submit">
+</form>
+</body>
+</html>

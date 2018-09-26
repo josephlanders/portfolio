@@ -1,0 +1,134 @@
+1.) Produce a list of names of all salespeople that have an order with Samsonic.
+
+SELECT DISTINCT(name) 
+   FROM salesperson 
+   LEFT OUTER JOIN 
+      (SELECT salesperson_id 
+         FROM customer 
+         LEFT OUTER JOIN orders 
+            ON customer.id = orders.cust_id 
+            WHERE customer.name='Samsonic')B 
+    ON salesperson.id = B.salesperson_id 
+    WHERE salesperson_id IS NOT NULL;
+
+Bob
+Ken
+
+SELECT DISTINCT(name) 
+   FROM salesperson
+   WHERE salesperson.id
+   IN 
+      (SELECT salesperson_id 
+       FROM customer
+       LEFT OUTER JOIN orders 
+       ON customer.id = orders.cust_id 
+       WHERE customer.name='Samsonic');
+
+Bob
+Ken
+
+SELECT DISTINCT(name)
+   FROM salesperson
+   INNER JOIN 
+      (SELECT salesperson_id 
+      FROM customer
+      INNER JOIN orders 
+      ON customer.id = orders.cust_id 
+      WHERE customer.name='Samsonic')B 
+   ON salesperson.id = B.salesperson_id;
+
+Bob
+Ken
+
+
+2.) Produce a list of all salespeople that do not have any order with Samsonic.
+
+// Salespeople that have orders but not with samsonic (should therefore exclude Bob and Ken who have orders with samsonic) and (should exclude Chris and Joe as they have no orders at all)
+
+SELECT DISTINCT(name) 
+   FROM salesperson 
+   INNER JOIN 
+      (SELECT salesperson_id 
+          FROM orders
+          WHERE salesperson_id 
+          NOT IN 
+             (SELECT salesperson_id 
+                FROM customer 
+                INNER JOIN orders
+                ON customer.id = orders.cust_id 
+                WHERE customer.name='Samsonic'))B 
+   ON salesperson.id = B.salesperson_id;
+
+Abe
+Dan
+
+// Variation of the above - salespeople without orders with samsonic - includes salespeople without orders. (Chris and Joe)
+
+SELECT DISTINCT(name) 
+   FROM salesperson 
+   WHERE salesperson.id 
+   NOT IN
+      (SELECT salesperson_id 
+         FROM customer
+         INNER JOIN orders 
+         ON customer.id = orders.cust_id
+         WHERE customer.name='Samsonic');
+
+Abe
+Chris
+Dan
+Joe
+
+SELECT DISTINCT(name) 
+   FROM salesperson
+   WHERE salesperson.id 
+   NOT IN 
+      (SELECT salesperson_id 
+         FROM customer 
+         LEFT OUTER JOIN orders
+         ON customer.id = orders.cust_id 
+         WHERE customer.name='Samsonic');
+
+Abe
+Chris
+Dan
+Joe
+
+3.) Produce a list of the names of salespeople that have 2 or more orders.
+
+SELECT name
+   FROM salesperson
+   INNER JOIN
+      orders
+   ON salesperson.id = orders.salesperson_id
+   GROUP BY salesperson_id
+   HAVING count(*) >=2;
+
+Bob
+Dan
+
+SELECT DISTINCT(name) 
+   FROM salesperson 
+   INNER JOIN 
+      (SELECT salesperson_id, count(*) 
+      FROM orders 
+      GROUP BY salesperson_id 
+      HAVING count(*) >=2)B 
+   ON b.salesperson_id = id;
+
+Bob
+Dan
+
+SELECT DISTINCT(name) 
+   FROM salesperson 
+   LEFT OUTER JOIN 
+      (SELECT salesperson_id, count(*) 
+         FROM orders 
+         GROUP BY salesperson_id 
+         HAVING count(*) >=2)B 
+      ON b.salesperson_id = id where salesperson_id IS NOT NULL;
+
+Bob
+Dan
+
+

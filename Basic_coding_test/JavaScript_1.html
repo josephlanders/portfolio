@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+function display(min, max) {
+   if (max <= min)
+   {
+      document.write("Max must be greater than min");
+      return;
+   }
+
+   var i;
+   for(i = min; i < max + 1; i++)
+   {
+       if (i % 3 ==0 && i % 4 == 0)
+       {
+           document.write("inSite Logic" + "<br/>");
+           continue; 
+       } 
+
+       if (i % 3 == 0)
+       {
+           document.write("inSite" + "<br/>");
+       } else if (i % 4 == 0)
+       {
+           document.write("logic" + "<br/>");
+       } else
+       { 
+           document.write(i + "<br/>");
+       }
+   }
+}
+</script>
+</head>
+<body>
+<script type="text/javascript">
+display(15, 140);
+</script>
+</body>
+</html>
