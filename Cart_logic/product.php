@@ -80,11 +80,8 @@ class product implements sortable {
 
         $this->url = $this->producturl;
 
-array_map("rawurlencode", explode("/", $this -> decodedurl)));
-
-
-        //$prefix = "/buy/";
-        
+        array_map("rawurlencode", explode("/", $this -> decodedurl)));
+               
         $prefix = $this -> prefix;
         $this->decodedurl = $this->url;
         $this->shorturl = implode("/", array_map("rawurlencode", explode("/", $this->decodedurl)));
@@ -98,9 +95,7 @@ array_map("rawurlencode", explode("/", $this -> decodedurl)));
             $this->tags = array();
         }
     }
-
-
-
+    
     public function set_images($images) {
         $this->images = $images;
         
