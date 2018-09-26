@@ -1,3 +1,109 @@
+<?php
+
+namespace client_code;
+
+/* This file and the code within it are distributed under commercial license.
+ * Permission must be granted from the 
+ * original author / copyright holder of the file before 
+ * accessing, using, compiling, interpreting, modifying and redistributing the code.
+ * 
+ * email: josephlanders@gmail.com - visit contact.txt in root folder for more
+ */
+?>
+
+<?php
+
+require_once($GLOBALS["sb_code_path"] . "/client_code//model/database/product.php");
+require_once($GLOBALS["sb_code_path"] . "/client_code//model/database/variant.php");
+require_once($GLOBALS["sb_code_path"] . "/client_code//model/database/parcel.php");
+
+class cart {
+    /* Cart layout example */
+    /*
+      $_SESSION["client_site"]["cart"]["parcels"][$parcelid]
+
+      ["products"][$productid] = $cartproduct;
+      ($cartproduct contains $product and $quantity as subkeys);
+
+      $_SESSION["client_site"]["cart"]["specials"][$productid][""];
+      $_SESSION["client_site"]["cart"]["shipping_address"];
+      $_SESSION["client_site"]["cart"]["billing_address"];
+     */
+
+    public $shipping_class = null;
+    private $model = null;
+    public $shipping = 0.00;
+    private $total_with_shipping = 0;
+    public $total = 0;
+    private $total_without_shipping = 0;
+    public $subtotal = 0;
+    public $tax = 0;
+    //public $products = array();
+    public $count = 0;
+    public $product_total = 0;
+    public $item_total = 0;
+    public $product_undiscounted_total = 0;
+    public $coupon = 0;
+    public $coupon_applied_value;
+    public $product_total_with_shipping;
+    public $weight = 0;
+    public $parcels = array();
+    private $products = array();
+    public $taxes = array();
+    public $shipping_taxes = array();
+    public $billing_address = null;
+    public $shipping_address = null;
+    public $email = "";
+    public $shipping_methods = array();
+    public $shipping_method = null;
+    public $currencycode = "";
+    public $currency = null;
+    public $cart_max_count = 100; # When using cookies, our historical limit was 20
+    public $cart_max_qty = 10000; # When using cookies, our historical limit was 99
+    public $strip_cart = false;
+    public $order = null;
+    public $shipping_total_before_coupon = 0;
+
+    public function __construct($model) {
+        $this->model = $model;
+
+        # Retrieve parcels from session and set to public variable $parcels
+        $parcels = $this->get_parcels();
+
+        $this->parcels = $parcels;
+
+        $this->order = $this->restore_order();
+
+        $string = $this->retrieve_cart_session_string();
+
+        $this->shipping_methods = $this->get_shipping_methods_from_session();
+        $this->shipping_method = $this->get_shipping_method_from_session();
+        
+        if ($this->strip_cart == true) {
+            $array_of_stuff = explode(",", $string);
+            foreach ($array_of_stuff as $array_of_stuff2) {
+                $arr = explode("=", $array_of_stuff2);
+
+                if (count($arr) == 3) {
+                    list($productid, $variantid, $orderedqty) = $arr;
+
+                    $this->update_qty($productid, $variantid, $orderedqty);
+                }
+            }
+        }
+
+        $currency = $this->restore_currency();
+        if ($currency != null) {
+            $this->currency = $currency;
+        }
+
+        $this->store_cart_session_string();
+        $this->shipping_address = $this->get_shipping_address();
+        $this->billing_address = $this->get_billing_address();
+
+        $this->calculate();
+    }
+    
     public function add_product(product $product, $variantid) {
         $error_messages = array();
         $added = false;
@@ -610,6 +716,5 @@
 
         return array($success, $error_messages);
     }
-
-
-
+}
+?>
