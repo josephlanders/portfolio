@@ -13,8 +13,6 @@ namespace client_code;
 
 <?php
 
-#chdir("../client_code");
-
 require_once("sortable.php");
 
 class variant implements sortable {
@@ -71,10 +69,6 @@ class variant implements sortable {
 
         /* Pass fields in to create special object */
         $this->special = new special($fields);
-        
-        #if ($this -> special -> active == false)
-        #{
-            #}
         
         $this->name = $this->variantname;
 
