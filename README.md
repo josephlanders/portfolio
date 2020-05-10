@@ -13,7 +13,6 @@ Information Retrieval A1 was coded in 3 languages out of interest to test perfor
 Athena is coded in PHP and is an ecommerce solution, the client site templates use the Smarty Templating Language. Thus 4/5 languages are used for this solution (PHP, HTML, CSS, JQuery, Smarty, SQL)
 <br/>
 <br/>
-http://athenaclients.ddns.net
 
 I've included examples of:<br/><br/>
     Java (.java)<br/>
